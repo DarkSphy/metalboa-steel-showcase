@@ -18,6 +18,9 @@ import hero from "@/assets/hero.jpg";
 import gourmet from "@/assets/gourmet.jpg";
 import fabrica from "@/assets/fabrica.jpg";
 import industrial from "@/assets/industrial.jpg";
+import productPhotoData from "@/data/product-photos.json";
+
+const productPhotos = productPhotoData as Record<string, string[]>;
 
 const WHATS = "https://wa.me/5531971775866";
 const PHONE = "tel:+553136212931";
@@ -176,15 +179,15 @@ const catalogs: Partial<Record<"atacado" | "varejo" | "cozinhas", CatalogProduct
   ],
   cozinhas: Array.from({ length: 26 }, (_, index) => {
     const number = String(26 - index).padStart(2, "0");
-    return { name: `Layout Cozinha ${number}`, slug: `layout-cozinha-${Number(number)}` };
+    return { name: `Layout Cozinha ${number}`, slug: `layout-cozinha-${number}` };
   }),
 };
 
 const featuredProducts = [
-  { name: "Bancadas Inox", category: "VAREJO", slug: "bancadas-inox", image: industrial, imageAlt: "Bancada em inox em ambiente profissional" },
-  { name: "Estantes inox", category: "ATACADO", slug: "estantes-inox", image: "/images/products/estantes-inox.webp", imageAlt: "Estante de aço inox MetalBoa" },
-  { name: "Pasteleira", category: "ATACADO", slug: "pasteleira", image: "/images/products/pasteleira.webp", imageAlt: "Pasteleira MetalBoa em aço inox" },
-  { name: "Escorredor de Fritura", category: "VAREJO", slug: "escorredor-de-fritura", image: "/images/products/escorredor-fritura.png", imageAlt: "Escorredor de fritura em aço inox MetalBoa" },
+  { name: "Bancadas Inox", category: "VAREJO", slug: "bancadas-inox", image: productPhotos["bancadas-inox"]?.[0] },
+  { name: "Estantes inox", category: "ATACADO", slug: "estantes-inox", image: productPhotos["estantes-inox"]?.[0] },
+  { name: "Pasteleira", category: "ATACADO", slug: "pasteleira", image: productPhotos.pasteleira?.[0] },
+  { name: "Escorredor de Fritura", category: "VAREJO", slug: "escorredor-de-fritura", image: productPhotos["escorredor-de-fritura"]?.[0] },
 ];
 
 function Brand({ light = false }: { light?: boolean }) {
@@ -397,12 +400,6 @@ const productPageCopy: Record<string, { text: string; points: string[] }> = {
   },
 };
 
-const productPhotos: Record<string, string> = {
-  "estantes-inox": "/images/products/estantes-inox.webp",
-  pasteleira: "/images/products/pasteleira.webp",
-  "escorredor-de-fritura": "/images/products/escorredor-fritura.png",
-};
-
 export function ProductDetailPage({ slug }: { slug: string }) {
   const found = Object.entries(catalogs).flatMap(([category, products]) =>
     (products ?? []).map((product) => ({ ...product, category: category as "atacado" | "varejo" | "cozinhas" })),
@@ -414,7 +411,9 @@ export function ProductDetailPage({ slug }: { slug: string }) {
     text: `${name} faz parte do catálogo MetalBoa. Fale com nossa equipe para conhecer opções, confirmar materiais, dimensões, aplicação e disponibilidade para sua necessidade.`,
     points: ["Atendimento direto com a equipe MetalBoa", "Consulte configurações e dimensões", "Disponibilidade confirmada no atendimento"],
   };
-  const image = productPhotos[slug] ?? (slug === "bancadas-inox" ? industrial : fabrica);
+  const photos = productPhotos[slug] ?? [];
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const activePhoto = photos[activePhotoIndex] ?? photos[0];
   const whatsappLink = `${WHATS}?text=${encodeURIComponent(`Olá! Tenho interesse no produto ${name}. Poderiam me passar mais informações?`)}`;
 
   return (
@@ -427,7 +426,16 @@ export function ProductDetailPage({ slug }: { slug: string }) {
         </nav>
         <section className="product-detail-section section-pad">
           <div className="shell product-detail-grid">
-            <div className="product-detail-image"><img src={image} alt={name} /></div>
+            <div className="product-detail-image">
+              {activePhoto ? (
+                <>
+                  <div className="product-image-stage"><img src={activePhoto} alt={`${name} — foto ${activePhotoIndex + 1}`} /></div>
+                  {photos.length > 1 && <div className="product-thumbnails" aria-label="Fotos do produto">
+                    {photos.map((photo, index) => <button type="button" className={index === activePhotoIndex ? "product-thumbnail product-thumbnail-active" : "product-thumbnail"} onClick={() => setActivePhotoIndex(index)} key={photo} aria-label={`Ver foto ${index + 1} de ${name}`}><img src={photo} alt="" /></button>)}
+                  </div>}
+                </>
+              ) : <div className="product-photo-missing"><Factory size={34} strokeWidth={1.3} /><p>O catálogo antigo não apresenta uma foto para este produto.</p></div>}
+            </div>
             <div className="product-detail-copy">
               <span className="section-index">METALBOA · {category === "cozinhas" ? "COZINHAS INDUSTRIAIS" : category.toUpperCase()}</span>
               <h1>{name}</h1>
@@ -492,7 +500,7 @@ function HomeContent() {
             {featuredProducts.map((product, index) => (
               <a className="featured-card" href={`/produtos/${product.slug}`} key={product.slug}>
                 <span className="featured-card-art">
-                  <img src={product.image} alt={product.imageAlt} loading="lazy" />
+                  {product.image ? <img src={product.image} alt={product.name} loading="lazy" /> : <span className="featured-photo-missing">Foto indisponível</span>}
                   <span className="featured-card-number">{String(index + 1).padStart(2, "0")}</span>
                   <ArrowUpRight size={18} className="featured-card-arrow" />
                 </span>

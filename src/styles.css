@@ -694,8 +694,16 @@
 .product-breadcrumb a { color: #4674b7; }
 .product-detail-section { background: #f1f5f8; }
 .product-detail-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(35px, 6vw, 82px); align-items: start; }
-.product-detail-image { display: flex; min-height: 490px; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #e1e8ee; background: #fff; }
-.product-detail-image img { width: 100%; height: 100%; max-height: 620px; object-fit: contain; }
+.product-detail-image { display: grid; min-height: 490px; align-content: start; gap: 12px; overflow: hidden; border: 1px solid #e1e8ee; padding: 18px; background: #fff; }
+.product-image-stage { display: flex; min-height: 410px; align-items: center; justify-content: center; }
+.product-image-stage img { width: 100%; height: 100%; max-height: 560px; object-fit: contain; }
+.product-thumbnails { display: flex; flex-wrap: wrap; gap: 8px; }
+.product-thumbnail { width: 66px; height: 66px; overflow: hidden; border: 1px solid #dce4eb; padding: 4px; background: #fff; cursor: pointer; }
+.product-thumbnail-active { border-color: #4674b7; box-shadow: 0 0 0 2px rgb(70 116 183 / 12%); }
+.product-thumbnail img { width: 100%; height: 100%; object-fit: contain; }
+.product-photo-missing { display: flex; min-height: 440px; align-items: center; flex-direction: column; justify-content: center; gap: 16px; color: #8da1b2; text-align: center; }
+.product-photo-missing p { max-width: 260px; margin: 0; font-size: 12px; line-height: 1.7; }
+.featured-photo-missing { color: #73869a; font-size: 10px; }
 .product-detail-copy { padding-block: 8px; }
 .product-detail-copy h1 { margin: 18px 0; color: #123554; font-family: "Montserrat", sans-serif; font-size: clamp(38px, 5vw, 58px); letter-spacing: -.05em; line-height: 1.08; }
 .product-detail-copy > p:not(.product-support-copy) { max-width: 600px; color: #5c6d7d; font-size: 13px; line-height: 1.9; }
@@ -1445,7 +1453,9 @@
   .featured-card-copy strong { font-size: 12px; }
   .featured-actions { display: grid; }
   .product-detail-grid { grid-template-columns: 1fr; gap: 27px; }
-  .product-detail-image { min-height: 300px; max-height: 380px; }
+  .product-detail-image { min-height: 300px; padding: 11px; }
+  .product-image-stage { min-height: 270px; max-height: 330px; }
+  .product-photo-missing { min-height: 280px; }
   .product-detail-copy h1 { font-size: 39px; }
   .solution-card {
     min-height: 390px;
