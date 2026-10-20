@@ -672,6 +672,24 @@
 .process-section {
   background: #fff;
 }
+.featured-section { background: #f1f5f8; }
+.featured-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.featured-card { min-width: 0; background: #fff; transition: transform .2s, box-shadow .2s; }
+.featured-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgb(8 41 74 / 9%); }
+.featured-card-art { position: relative; display: flex; height: 190px; align-items: center; justify-content: center; overflow: hidden; color: #80b3d8; background: linear-gradient(145deg, #e9f2f8, #d8e6f0); }
+.featured-card-art::before,.featured-card-art::after { position: absolute; width: 180px; height: 180px; border: 1px solid rgb(70 116 183 / 15%); border-radius: 50%; content: ""; }
+.featured-card-art::after { width: 240px; height: 240px; }
+.featured-card-art > svg:not(.featured-card-arrow) { z-index: 1; }
+.featured-card-number { position: absolute; top: 16px; left: 17px; color: #4674b7; font-size: 10px; font-weight: 800; letter-spacing: .13em; }
+.featured-card-arrow { position: absolute; right: 14px; bottom: 14px; color: #4674b7; }
+.featured-card-copy { display: grid; gap: 9px; padding: 17px; }
+.featured-card-copy small { color: #4674b7; font-size: 9px; font-weight: 800; letter-spacing: .14em; }
+.featured-card-copy strong { min-height: 38px; color: #123554; font-family: "Montserrat", sans-serif; font-size: 14px; line-height: 1.4; }
+.featured-card-copy > span { display: inline-flex; align-items: center; gap: 7px; color: #68798a; font-size: 10px; }
+.featured-card:hover .featured-card-copy > span { color: #315d9c; }
+.featured-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.button-secondary { border: 1px solid #cbd9e5; color: #123554; background: #fff; }
+.button-secondary:hover { border-color: #4674b7; background: #f8fbfd; }
 .process-heading {
   margin-bottom: 50px;
 }
@@ -1400,6 +1418,11 @@
     grid-template-columns: 1fr;
     gap: 14px;
   }
+  .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .featured-card-art { height: 145px; }
+  .featured-card-copy { padding: 13px; }
+  .featured-card-copy strong { font-size: 12px; }
+  .featured-actions { display: grid; }
   .solution-card {
     min-height: 390px;
   }

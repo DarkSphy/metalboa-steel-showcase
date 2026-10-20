@@ -180,6 +180,13 @@ const catalogs: Partial<Record<"atacado" | "varejo" | "cozinhas", CatalogProduct
   }),
 };
 
+const featuredProducts = [
+  { name: "Bancadas Inox", category: "VAREJO", slug: "bancadas-inox", href: "https://www.metalboa.com.br/produtos/bancadas-inox/" },
+  { name: "Estantes inox", category: "ATACADO", slug: "estantes-inox", href: "https://www.metalboa.com.br/produtos/estantes-inox/" },
+  { name: "Pasteleira", category: "ATACADO", slug: "pasteleira", href: "https://www.metalboa.com.br/produtos/pasteleira/" },
+  { name: "Escorredor de Fritura", category: "VAREJO", slug: "escorredor-de-fritura", href: "https://www.metalboa.com.br/produtos/escorredor-de-fritura/" },
+];
+
 function Brand({ light = false }: { light?: boolean }) {
   return (
     <img
@@ -195,14 +202,6 @@ function Header({ current }: { current: PageKey }) {
 
   return (
     <header className="site-header">
-      <div className="utility-bar">
-        <div className="shell utility-inner">
-          <span>Engenharia, desenvolvimento e fabricação em aço inox</span>
-          <a href={WHATS} target="_blank" rel="noreferrer">
-            <Phone size={13} /> (31) 97177-5866
-          </a>
-        </div>
-      </div>
       <div className="shell nav-row">
         <Link to="/" aria-label="MetalBoa, início" className="brand-link">
           <Brand />
@@ -332,10 +331,6 @@ export function SitePage({ current }: { current: PageKey }) {
           <div className="hero-shade" />
           <div className="shell hero-content">
             <div className="hero-copy">
-              <p className="eyebrow eyebrow-light">
-                <span className="eyebrow-dot" />
-                {page.eyebrow}
-              </p>
               <h1>{page.title}</h1>
               <p className="hero-description">{page.description}</p>
               <div className="hero-actions">
@@ -399,14 +394,46 @@ function HomeContent() {
             </h2>
             <div className="intro-bottom">
               <p>
-                A MetalBoa transforma necessidades de operação em soluções funcionais de aço inox.
-                Com fabricação própria e atendimento consultivo, atuamos lado a lado com cada
-                cliente, do primeiro desenho à entrega.
+                Com mais de 25 anos de experiência, desenvolvemos e fabricamos equipamentos em aço
+                inox para clientes e parceiros em todo o Brasil. Nossa equipe une conhecimento
+                técnico e fabricação própria para atender diferentes necessidades.
               </p>
-              <Link to="/contato" className="text-link">
-                Conheça nosso jeito de trabalhar <MoveRight size={16} />
+              <Link to="/sobre" className="text-link">
+                Conheça a MetalBoa <MoveRight size={16} />
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="featured-section section-pad">
+        <div className="shell">
+          <div className="section-heading-row">
+            <div>
+              <span className="section-index">03 / PRODUTOS EM DESTAQUE</span>
+              <h2>Equipamentos para o dia a dia da sua operação.</h2>
+            </div>
+            <p>Explore algumas opções do catálogo e consulte a loja para ver detalhes atualizados.</p>
+          </div>
+          <div className="featured-grid">
+            {featuredProducts.map((product, index) => (
+              <a className="featured-card" href={product.href} target="_blank" rel="noreferrer" key={product.slug}>
+                <span className="featured-card-art" aria-hidden="true">
+                  <span className="featured-card-number">{String(index + 1).padStart(2, "0")}</span>
+                  <Factory size={39} strokeWidth={1.15} />
+                  <ArrowUpRight size={18} className="featured-card-arrow" />
+                </span>
+                <span className="featured-card-copy">
+                  <small>{product.category}</small>
+                  <strong>{product.name}</strong>
+                  <span>Ver produto <ArrowRight size={14} /></span>
+                </span>
+              </a>
+            ))}
+          </div>
+          <div className="featured-actions">
+            <Link to="/atacado" className="button button-primary">Ver catálogo de atacado <ArrowRight size={16} /></Link>
+            <Link to="/varejo" className="button button-secondary">Ver catálogo de varejo <ArrowRight size={16} /></Link>
           </div>
         </div>
       </section>
@@ -479,7 +506,7 @@ function HomeContent() {
           />
         </div>
         <div className="approach-copy">
-          <span className="section-index section-index-light">03 / NOSSO DIFERENCIAL</span>
+              <span className="section-index section-index-light">04 / NOSSO DIFERENCIAL</span>
           <h2>O encaixe perfeito entre desafio e solução.</h2>
           <p>
             Um bom equipamento começa com uma pergunta bem feita. Entendemos o ambiente, a rotina e
@@ -506,7 +533,7 @@ function HomeContent() {
         <div className="shell">
           <div className="section-heading-row process-heading">
             <div>
-              <span className="section-index">04 / COMO TRABALHAMOS</span>
+              <span className="section-index">05 / COMO TRABALHAMOS</span>
               <h2>
                 Da conversa à<br />
                 solução pronta.
