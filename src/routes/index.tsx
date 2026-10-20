@@ -578,7 +578,7 @@ function InteriorContent({ current }: { current: PageKey }) {
           : current === "varejo"
             ? "Conte com orientação direta para escolher."
             : isAbout
-              ? "Uma empresa feita de experiência, engenharia e trabalho com metal."
+              ? "Mais de 25 anos transformando projetos em equipamentos de aço inox."
               : isFaq
                 ? "Encontre aqui as respostas para as dúvidas mais comuns."
                 : "Estamos prontos para ouvir.";
@@ -592,7 +592,7 @@ function InteriorContent({ current }: { current: PageKey }) {
           : current === "varejo"
             ? "Nosso time ajuda você a encontrar o caminho adequado para sua demanda. Conte qual equipamento ou solução está procurando para receber um atendimento atencioso e objetivo."
             : isAbout
-              ? "A MetalBoa é uma empresa brasileira que desenvolve e fabrica soluções em aço inox. Nossa trajetória de quase três décadas combina conhecimento de produção com parceria próxima para atender às necessidades de cada operação."
+              ? "Somos uma organização com mais de 25 anos de experiência na fabricação e no desenvolvimento de equipamentos e artefatos em aço inoxidável. Atendemos parceiros e clientes em todo o Brasil a partir da nossa sede em Vespasiano, na região metropolitana de Belo Horizonte. Nossa equipe trabalha para transformar projetos e ideias em soluções de qualidade e confiança."
               : isFaq
                 ? "Saiba mais sobre nosso catálogo, projetos e formas de atendimento. Para valores, disponibilidade e detalhes de um pedido, fale com a equipe."
                 : "Você pode falar com nossa equipe por WhatsApp, telefone ou e-mail. Se preferir, visite nossa unidade em Vespasiano, Minas Gerais.";
@@ -746,18 +746,18 @@ function AboutContent() {
       <div className="shell">
         <div className="section-heading-row">
           <div>
-            <span className="section-index">02 / O QUE NOS MOVE</span>
-            <h2>Conhecimento que ganha forma no aço.</h2>
+            <span className="section-index">02 / NOSSA MISSÃO</span>
+            <h2>Atender necessidades com qualidade e responsabilidade.</h2>
           </div>
           <p>
-            Acreditamos que uma boa solução começa entendendo como cada cliente trabalha. Por isso,
-            aproximamos engenharia, desenvolvimento e fabricação em cada projeto.
+            Desenvolver equipamentos robustos e de alto padrão, trazendo satisfação, praticidade e
+            sustentabilidade para cada demanda.
           </p>
         </div>
-        <div className="about-pillars">
-          <article><span>01</span><h3>Experiência</h3><p>Quase três décadas de atuação no mercado, construindo conhecimento e relações de confiança.</p></article>
-          <article><span>02</span><h3>Fabricação própria</h3><p>Produção próxima do desenvolvimento para acompanhar de perto cada solução em aço inox.</p></article>
-          <article><span>03</span><h3>Parceria técnica</h3><p>Escutamos a necessidade e avaliamos o contexto para orientar os próximos passos do projeto.</p></article>
+        <div className="about-pillars about-pillars-values">
+          <article><span>01 / VISÃO</span><h3>Ser referência com raízes em Minas.</h3><p>Atuar como referência no mercado mineiro, mantendo o compromisso com clientes, colaboradores e parceiros ao longo da nossa trajetória.</p></article>
+          <article><span>02 / QUALIDADE</span><h3>Fazer bem feito, com segurança.</h3><p>A qualidade dos produtos orienta nosso trabalho e está ligada à segurança e à satisfação de quem escolhe a MetalBoa.</p></article>
+          <article><span>03 / VALORES</span><h3>Relações de confiança.</h3><p>Compromisso, ética, honestidade, respeito e busca por melhorias guiam nossas relações com clientes, fornecedores e parceiros.</p></article>
         </div>
         <Link to="/contato" className="text-link">Vamos conversar sobre sua operação <MoveRight size={16} /></Link>
       </div>
