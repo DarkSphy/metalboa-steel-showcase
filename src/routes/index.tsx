@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   Check,
   Factory,
+  HelpCircle,
   Menu,
   MoveRight,
   Phone,
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-type PageKey = "home" | "atacado" | "varejo" | "gourmet" | "cozinhas" | "contato";
+type PageKey = "home" | "atacado" | "varejo" | "gourmet" | "cozinhas" | "sobre" | "faq" | "contato";
 
 const pages: Record<
   PageKey,
@@ -98,6 +99,22 @@ const pages: Record<
     image: fabrica,
     imageAlt: "Equipe e ambiente de fabricação MetalBoa",
   },
+  sobre: {
+    title: "Experiência que transforma desafios em soluções.",
+    eyebrow: "Sobre a MetalBoa",
+    description:
+      "Há quase 30 anos, unimos conhecimento técnico e fabricação própria para criar soluções em aço inox para operações profissionais.",
+    image: fabrica,
+    imageAlt: "Ambiente de fabricação MetalBoa",
+  },
+  faq: {
+    title: "Respostas para você seguir em frente.",
+    eyebrow: "Perguntas frequentes",
+    description:
+      "Reunimos orientações sobre produtos, projetos e atendimento. Se sua dúvida continuar, nossa equipe está por perto.",
+    image: industrial,
+    imageAlt: "Equipamentos em aço inox para operações profissionais",
+  },
 };
 
 const navItems: { key: PageKey; label: string; href: string }[] = [
@@ -106,6 +123,8 @@ const navItems: { key: PageKey; label: string; href: string }[] = [
   { key: "varejo", label: "Varejo", href: "/varejo" },
   { key: "gourmet", label: "Gourmet", href: "/gourmet" },
   { key: "cozinhas", label: "Cozinhas industriais", href: "/cozinhas-industriais" },
+  { key: "sobre", label: "Sobre", href: "/sobre" },
+  { key: "faq", label: "Dúvidas", href: "/perguntas-frequentes" },
   { key: "contato", label: "Contato", href: "/contato" },
 ];
 
@@ -547,6 +566,8 @@ function HomeContent() {
 function InteriorContent({ current }: { current: PageKey }) {
   const audience = current === "gourmet" || current === "cozinhas";
   const trade = current === "atacado" || current === "varejo";
+  const isAbout = current === "sobre";
+  const isFaq = current === "faq";
   const title =
     current === "gourmet"
       ? "Funcionalidade com acabamento que acolhe."
@@ -556,7 +577,11 @@ function InteriorContent({ current }: { current: PageKey }) {
           ? "Fornecimento com diálogo e previsibilidade."
           : current === "varejo"
             ? "Conte com orientação direta para escolher."
-            : "Estamos prontos para ouvir.";
+            : isAbout
+              ? "Uma empresa feita de experiência, engenharia e trabalho com metal."
+              : isFaq
+                ? "Encontre aqui as respostas para as dúvidas mais comuns."
+                : "Estamos prontos para ouvir.";
   const body =
     current === "gourmet"
       ? "Cada espaço tem sua dinâmica. Ajudamos a pensar soluções em inox que aproveitam melhor a área, apoiam a rotina e mantêm um acabamento coerente com o ambiente."
@@ -566,7 +591,11 @@ function InteriorContent({ current }: { current: PageKey }) {
           ? "Queremos construir relações comerciais duradouras. Conversamos sobre as necessidades do seu negócio, frequência de fornecimento e perfil dos produtos para orientar o atendimento."
           : current === "varejo"
             ? "Nosso time ajuda você a encontrar o caminho adequado para sua demanda. Conte qual equipamento ou solução está procurando para receber um atendimento atencioso e objetivo."
-            : "Você pode falar com nossa equipe por WhatsApp, telefone ou e-mail. Se preferir, visite nossa unidade em Vespasiano, Minas Gerais.";
+            : isAbout
+              ? "A MetalBoa é uma empresa brasileira que desenvolve e fabrica soluções em aço inox. Nossa trajetória de quase três décadas combina conhecimento de produção com parceria próxima para atender às necessidades de cada operação."
+              : isFaq
+                ? "Saiba mais sobre nosso catálogo, projetos e formas de atendimento. Para valores, disponibilidade e detalhes de um pedido, fale com a equipe."
+                : "Você pode falar com nossa equipe por WhatsApp, telefone ou e-mail. Se preferir, visite nossa unidade em Vespasiano, Minas Gerais.";
 
   return (
     <>
@@ -574,14 +603,22 @@ function InteriorContent({ current }: { current: PageKey }) {
         <div className="shell interior-grid">
           <div>
             <span className="section-index">
-              {current === "contato"
+              {isAbout
+                ? "01 / NOSSA HISTÓRIA"
+                : isFaq
+                  ? "01 / AJUDA E ORIENTAÇÃO"
+                  : current === "contato"
                 ? "01 / CANAIS DE ATENDIMENTO"
                 : trade
                   ? "01 / RELACIONAMENTO COMERCIAL"
                   : "01 / SOLUÇÕES POR APLICAÇÃO"}
             </span>
             <span className="interior-icon">
-              {current === "contato" ? (
+              {isAbout ? (
+                <Factory size={20} />
+              ) : isFaq ? (
+                <HelpCircle size={20} />
+              ) : current === "contato" ? (
                 <Phone size={20} />
               ) : trade ? (
                 <ArrowRight size={20} />
@@ -593,7 +630,7 @@ function InteriorContent({ current }: { current: PageKey }) {
           <div>
             <h2>{title}</h2>
             <p>{body}</p>
-            {current !== "contato" && (
+            {current !== "contato" && !isFaq && (
               <a href={WHATS} target="_blank" rel="noreferrer" className="text-link">
                 Converse com um especialista <MoveRight size={16} />
               </a>
@@ -601,6 +638,8 @@ function InteriorContent({ current }: { current: PageKey }) {
           </div>
         </div>
       </section>
+      {isAbout && <AboutContent />}
+      {isFaq && <FaqContent />}
       {audience && (
         <section className="application-section">
           <div className="shell application-grid">
@@ -665,7 +704,9 @@ function InteriorContent({ current }: { current: PageKey }) {
       )}
       {isContactPanel(current) && (
         <section className="contact-details section-pad">
-          <div className="shell contact-details-grid">
+          <div className="shell contact-layout">
+            <ContactForm />
+            <div className="contact-details-grid">
             <a href={WHATS} target="_blank" rel="noreferrer" className="contact-detail-card">
               <span>WHATSAPP</span>
               <strong>(31) 97177-5866</strong>
@@ -690,11 +731,92 @@ function InteriorContent({ current }: { current: PageKey }) {
               <small>R. São Paulo, 229 · Celvia</small>
               <ArrowUpRight size={18} />
             </a>
+            </div>
           </div>
         </section>
       )}
       <ContactBand />
     </>
+  );
+}
+
+function AboutContent() {
+  return (
+    <section className="about-section section-pad">
+      <div className="shell">
+        <div className="section-heading-row">
+          <div>
+            <span className="section-index">02 / O QUE NOS MOVE</span>
+            <h2>Conhecimento que ganha forma no aço.</h2>
+          </div>
+          <p>
+            Acreditamos que uma boa solução começa entendendo como cada cliente trabalha. Por isso,
+            aproximamos engenharia, desenvolvimento e fabricação em cada projeto.
+          </p>
+        </div>
+        <div className="about-pillars">
+          <article><span>01</span><h3>Experiência</h3><p>Quase três décadas de atuação no mercado, construindo conhecimento e relações de confiança.</p></article>
+          <article><span>02</span><h3>Fabricação própria</h3><p>Produção próxima do desenvolvimento para acompanhar de perto cada solução em aço inox.</p></article>
+          <article><span>03</span><h3>Parceria técnica</h3><p>Escutamos a necessidade e avaliamos o contexto para orientar os próximos passos do projeto.</p></article>
+        </div>
+        <Link to="/contato" className="text-link">Vamos conversar sobre sua operação <MoveRight size={16} /></Link>
+      </div>
+    </section>
+  );
+}
+
+const faqItems = [
+  ["Quais produtos a MetalBoa oferece?", "O catálogo inclui equipamentos e peças em aço inox para diferentes usos, como bancadas, estantes, pias, estufas e carrinhos. Consulte as páginas de Atacado, Varejo e Cozinhas industriais para explorar as categorias."],
+  ["A MetalBoa desenvolve soluções sob medida?", "Algumas demandas podem exigir avaliação de projeto, medidas e aplicação. Conte à equipe o que você precisa para confirmar as possibilidades para o seu caso."],
+  ["Como posso solicitar um orçamento?", "Entre em contato pelo WhatsApp, telefone ou e-mail. Informe o produto ou projeto desejado, a quantidade e, se possível, medidas e local de uso."],
+  ["Vocês atendem empresas e revendedores?", "Sim. A área de Atacado é dedicada ao atendimento comercial de revendas, distribuidores e empresas. A equipe pode conversar sobre o perfil da sua operação e a necessidade de fornecimento."],
+  ["Posso comprar como cliente de varejo?", "Sim. A página de Varejo apresenta opções para atendimento direto. A disponibilidade e as condições podem variar conforme o produto; confirme os detalhes com a equipe."],
+  ["A MetalBoa atende projetos de cozinhas industriais e espaços gourmet?", "Sim. O site apresenta soluções para cozinhas industriais e espaços gourmet. Para avaliar uma aplicação específica, envie as informações do espaço e da rotina de uso."],
+  ["Como confirmo preço, estoque, prazo e entrega?", "Essas informações dependem do produto, da quantidade e do destino. Fale com a equipe para consultar os dados atualizados antes de concluir o pedido."],
+];
+
+function FaqContent() {
+  return (
+    <section className="faq-section section-pad">
+      <div className="shell faq-grid">
+        <div>
+          <span className="section-index">02 / PERGUNTAS E RESPOSTAS</span>
+          <h2>O que você precisa saber.</h2>
+          <p>Não encontrou sua resposta? Nossa equipe pode ajudar com seu projeto ou pedido.</p>
+          <Link to="/contato" className="button button-primary">Fale com a equipe <ArrowRight size={16} /></Link>
+        </div>
+        <div className="faq-list">
+          {faqItems.map(([question, answer]) => (
+            <details key={question}>
+              <summary>{question}<span aria-hidden="true">+</span></summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactForm() {
+  return (
+    <div className="contact-form-panel">
+      <span className="section-index">FALE COM A NOSSA EQUIPE</span>
+      <h2>Conte um pouco sobre o que você precisa.</h2>
+      <p>Preencha os campos e nossa equipe poderá entender melhor sua necessidade.</p>
+      <form onSubmit={(event) => event.preventDefault()}>
+        <label>Nome<input name="nome" autoComplete="name" placeholder="Seu nome" required /></label>
+        <div className="form-row">
+          <label>E-mail<input name="email" type="email" autoComplete="email" placeholder="voce@empresa.com.br" required /></label>
+          <label>Telefone<input name="telefone" type="tel" autoComplete="tel" placeholder="(00) 00000-0000" /></label>
+        </div>
+        <label>Empresa <span>(opcional)</span><input name="empresa" autoComplete="organization" placeholder="Nome da empresa" /></label>
+        <label>Assunto<select name="assunto" defaultValue=""><option value="" disabled>Selecione uma opção</option><option>Orçamento de produto</option><option>Projeto sob medida</option><option>Atacado e revenda</option><option>Outro assunto</option></select></label>
+        <label>Mensagem<textarea name="mensagem" rows={4} placeholder="Descreva brevemente sua necessidade" required /></label>
+        <button className="button button-primary" type="submit">Enviar mensagem <ArrowRight size={16} /></button>
+        <small className="form-note">Prévia do formulário: o envio online ainda não está conectado. Para atendimento agora, use WhatsApp ou e-mail.</small>
+      </form>
+    </div>
   );
 }
 

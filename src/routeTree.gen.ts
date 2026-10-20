@@ -14,6 +14,8 @@ import { Route as AtacadoRouteImport } from './routes/atacado'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CozinhasIndustriaisRouteImport } from './routes/cozinhas-industriais'
 import { Route as GourmetRouteImport } from './routes/gourmet'
+import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as VarejoRouteImport } from './routes/varejo'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +43,16 @@ const GourmetRoute = GourmetRouteImport.update({
   path: '/gourmet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
+  id: '/perguntas-frequentes',
+  path: '/perguntas-frequentes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VarejoRoute = VarejoRouteImport.update({
   id: '/varejo',
   path: '/varejo',
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/cozinhas-industriais': typeof CozinhasIndustriaisRoute
   '/gourmet': typeof GourmetRoute
+  '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/sobre': typeof SobreRoute
   '/varejo': typeof VarejoRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +75,8 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/cozinhas-industriais': typeof CozinhasIndustriaisRoute
   '/gourmet': typeof GourmetRoute
+  '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/sobre': typeof SobreRoute
   '/varejo': typeof VarejoRoute
 }
 export interface FileRoutesById {
@@ -70,6 +86,8 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/cozinhas-industriais': typeof CozinhasIndustriaisRoute
   '/gourmet': typeof GourmetRoute
+  '/perguntas-frequentes': typeof PerguntasFrequentesRoute
+  '/sobre': typeof SobreRoute
   '/varejo': typeof VarejoRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +98,8 @@ export interface FileRouteTypes {
     | '/contato'
     | '/cozinhas-industriais'
     | '/gourmet'
+    | '/perguntas-frequentes'
+    | '/sobre'
     | '/varejo'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +108,8 @@ export interface FileRouteTypes {
     | '/contato'
     | '/cozinhas-industriais'
     | '/gourmet'
+    | '/perguntas-frequentes'
+    | '/sobre'
     | '/varejo'
   id:
     | '__root__'
@@ -96,6 +118,8 @@ export interface FileRouteTypes {
     | '/contato'
     | '/cozinhas-industriais'
     | '/gourmet'
+    | '/perguntas-frequentes'
+    | '/sobre'
     | '/varejo'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +129,8 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   CozinhasIndustriaisRoute: typeof CozinhasIndustriaisRoute
   GourmetRoute: typeof GourmetRoute
+  PerguntasFrequentesRoute: typeof PerguntasFrequentesRoute
+  SobreRoute: typeof SobreRoute
   VarejoRoute: typeof VarejoRoute
 }
 
@@ -145,6 +171,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GourmetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perguntas-frequentes': {
+      id: '/perguntas-frequentes'
+      path: '/perguntas-frequentes'
+      fullPath: '/perguntas-frequentes'
+      preLoaderRoute: typeof PerguntasFrequentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/varejo': {
       id: '/varejo'
       path: '/varejo'
@@ -161,6 +201,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   CozinhasIndustriaisRoute: CozinhasIndustriaisRoute,
   GourmetRoute: GourmetRoute,
+  PerguntasFrequentesRoute: PerguntasFrequentesRoute,
+  SobreRoute: SobreRoute,
   VarejoRoute: VarejoRoute,
 }
 export const routeTree = rootRouteImport
