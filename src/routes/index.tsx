@@ -1,184 +1,656 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Factory,
+  Menu,
+  MoveRight,
+  Phone,
+  Wrench,
+  X,
+} from "lucide-react";
+import { useState } from "react";
 import hero from "@/assets/hero.jpg";
 import gourmet from "@/assets/gourmet.jpg";
 import fabrica from "@/assets/fabrica.jpg";
 import industrial from "@/assets/industrial.jpg";
 
 const WHATS = "https://wa.me/5531971775866";
-const LOJA = "https://www.metalboa.com.br";
+const PHONE = "tel:+553136212931";
+const ADDRESS = "https://maps.google.com/?q=R.+São+Paulo,+229,+Vespasiano,+MG";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MetalBoa — Aço inox para cozinhas industriais e espaços gourmet" },
+      { title: "MetalBoa | Engenharia e soluções em aço inox" },
       {
         name: "description",
         content:
-          "Mesas, pias, bancadas e equipamentos em aço inox feitos sob medida. Cozinha industrial, gourmet, atacado e varejo.",
+          "Problemas complexos, soluções inteligentes. Engenharia, fabricação e equipamentos em aço inox para operações profissionais.",
       },
-      { property: "og:title", content: "MetalBoa — Aço inox sob medida" },
+      { property: "og:title", content: "MetalBoa | Engenharia e soluções em aço inox" },
       {
         property: "og:description",
-        content: "Equipamentos em aço inox para cozinhas industriais e áreas gourmet.",
+        content:
+          "Engenharia e fabricação própria de soluções em aço inox para operações profissionais.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#08294a" },
     ],
   }),
-  component: Index,
+  component: HomePage,
 });
 
-const linhas = [
-  { n: "01", t: "Cozinha industrial", d: "Mesas, pias, prateleiras e coifas para restaurantes, padarias e cozinhas de produção.", href: `${LOJA}/cozinha-industrial/`, img: industrial },
-  { n: "02", t: "Gourmet", d: "Churrasqueiras, bancadas e acessórios para a área de lazer da sua casa.", href: `${LOJA}/gourmet/`, img: gourmet },
+type PageKey = "home" | "atacado" | "varejo" | "gourmet" | "cozinhas" | "contato";
+
+const pages: Record<
+  PageKey,
+  { title: string; eyebrow: string; description: string; image: string; imageAlt: string }
+> = {
+  home: {
+    title: "Problemas complexos. Soluções inteligentes.",
+    eyebrow: "Engenharia e fabricação em aço inox",
+    description:
+      "Desenvolvemos soluções em aço inox para operações que exigem precisão, resistência e confiança. Da necessidade ao projeto, da fabricação à entrega.",
+    image: hero,
+    imageAlt: "Superfícies e equipamentos em aço inox numa cozinha profissional",
+  },
+  atacado: {
+    title: "Parceria para crescer junto.",
+    eyebrow: "Atacado",
+    description:
+      "Atendimento comercial para revendas, distribuidores e empresas que precisam de fornecimento confiável em aço inox. Vamos entender o seu volume e a sua operação.",
+    image: fabrica,
+    imageAlt: "Processo de fabricação de equipamentos em aço inox",
+  },
+  varejo: {
+    title: "A solução certa para a sua necessidade.",
+    eyebrow: "Varejo",
+    description:
+      "Atendimento direto para quem busca equipamentos e peças em aço inox. Conte para a nossa equipe o que você precisa e receba orientação para encontrar a solução adequada.",
+    image: industrial,
+    imageAlt: "Equipamentos de aço inox para uso profissional",
+  },
+  gourmet: {
+    title: "Feito para reunir. Projetado para durar.",
+    eyebrow: "Espaços gourmet",
+    description:
+      "Bancadas, cubas e estruturas em aço inox que combinam acabamento cuidadoso, funcionalidade e resistência para espaços de convivência.",
+    image: gourmet,
+    imageAlt: "Área gourmet equipada com bancada de aço inox",
+  },
+  cozinhas: {
+    title: "Uma operação eficiente começa no projeto.",
+    eyebrow: "Cozinhas industriais",
+    description:
+      "Equipamentos e estruturas em aço inox pensados para rotinas profissionais. Planejamos cada detalhe com foco em fluxo, higiene, durabilidade e facilidade de manutenção.",
+    image: industrial,
+    imageAlt: "Estação de trabalho em aço inox para cozinha profissional",
+  },
+  contato: {
+    title: "Vamos encontrar a solução juntos.",
+    eyebrow: "Fale com a MetalBoa",
+    description:
+      "Nossa equipe está pronta para conversar sobre o seu projeto, entender a sua operação e indicar os próximos passos.",
+    image: fabrica,
+    imageAlt: "Equipe e ambiente de fabricação MetalBoa",
+  },
+};
+
+const navItems: { key: PageKey; label: string; href: string }[] = [
+  { key: "home", label: "Início", href: "/" },
+  { key: "atacado", label: "Atacado", href: "/atacado" },
+  { key: "varejo", label: "Varejo", href: "/varejo" },
+  { key: "gourmet", label: "Gourmet", href: "/gourmet" },
+  { key: "cozinhas", label: "Cozinhas industriais", href: "/cozinhas-industriais" },
+  { key: "contato", label: "Contato", href: "/contato" },
 ];
 
-const vantagens = [
-  ["Não enferruja", "Resistente à corrosão, umidade e produtos de limpeza."],
-  ["Higiene de verdade", "Superfície não porosa, aprovada pela vigilância sanitária."],
-  ["Dura décadas", "Investimento único que atravessa gerações de uso pesado."],
-  ["100% reciclável", "Material sustentável, que volta ao ciclo sem perder qualidade."],
+const audienceCards = [
+  {
+    key: "cozinhas" as const,
+    number: "01",
+    title: "Cozinhas industriais",
+    description:
+      "Estruturas e equipamentos para cozinhas profissionais e operações de alimentação.",
+    image: industrial,
+    alt: "Bancada de aço inox numa cozinha profissional",
+  },
+  {
+    key: "gourmet" as const,
+    number: "02",
+    title: "Espaços gourmet",
+    description: "Soluções funcionais e duráveis para áreas gourmet e projetos residenciais.",
+    image: gourmet,
+    alt: "Projeto gourmet com acabamentos em inox",
+  },
 ];
 
-function Index() {
+function Brand({ light = false }: { light?: boolean }) {
   return (
-    <div className="bg-background text-foreground">
-      {/* topo */}
-      <header className="absolute inset-x-0 top-0 z-20 text-ink-foreground">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-6 md:px-10">
-          <a href="/" className="text-2xl font-black tracking-tight [font-stretch:125%]">
-            METAL<span className="text-signal">BOA</span>
-          </a>
-          <nav className="hidden gap-8 font-mono text-xs uppercase tracking-widest md:flex">
-            <a href={`${LOJA}/cozinha-industrial/`} className="hover:text-signal">Industrial</a>
-            <a href={`${LOJA}/gourmet/`} className="hover:text-signal">Gourmet</a>
-            <a href={`${LOJA}/atacado/`} className="hover:text-signal">Atacado</a>
-            <a href={`${LOJA}/varejo/`} className="hover:text-signal">Varejo</a>
-          </nav>
-          <a href={WHATS} className="border border-ink-foreground/40 px-4 py-2 font-mono text-xs uppercase tracking-widest transition hover:border-signal hover:bg-signal">
-            Orçamento
+    <span className={`brand-mark ${light ? "brand-mark-light" : ""}`} aria-label="MetalBoa">
+      <span className="brand-word">
+        METAL<span>BOA</span>
+      </span>
+      <span className="brand-tagline">PROBLEMAS COMPLEXOS, SOLUÇÕES INTELIGENTES</span>
+    </span>
+  );
+}
+
+function Header({ current }: { current: PageKey }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="site-header">
+      <div className="utility-bar">
+        <div className="shell utility-inner">
+          <span>Engenharia, desenvolvimento e fabricação em aço inox</span>
+          <a href={WHATS} target="_blank" rel="noreferrer">
+            <Phone size={13} /> (31) 97177-5866
           </a>
         </div>
-      </header>
+      </div>
+      <div className="shell nav-row">
+        <Link to="/" aria-label="MetalBoa, início" className="brand-link">
+          <Brand />
+        </Link>
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
+        <nav className={`main-nav ${open ? "main-nav-open" : ""}`} aria-label="Navegação principal">
+          {navItems.map((item) =>
+            item.key === "home" ? (
+              <Link
+                key={item.key}
+                to="/"
+                className={current === item.key ? "nav-active" : ""}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <Link
+                key={item.key}
+                to={item.href}
+                className={current === item.key ? "nav-active" : ""}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
+        </nav>
+        <Link to="/contato" className="button button-small button-primary nav-cta">
+          Fale com um especialista <ArrowUpRight size={15} />
+        </Link>
+      </div>
+    </header>
+  );
+}
 
-      {/* hero */}
-      <section className="relative min-h-[100svh] overflow-hidden bg-ink text-ink-foreground">
-        <img src={hero} alt="Bancada de aço inox em cozinha profissional" width={1600} height={1104} className="absolute inset-0 h-full w-full object-cover opacity-70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/50" />
-        <div className="relative mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-end px-6 pb-14 md:px-10">
-          <p className="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-steel">Aço inox · Belo Horizonte · desde a primeira solda</p>
-          <h1 className="max-w-5xl text-[13vw] font-black leading-[0.85] tracking-tight [font-stretch:75%] md:text-[8.5rem]">
-            Feito em inox.<br />
-            <span className="text-signal">Feito pra durar.</span>
-          </h1>
-          <div className="mt-10 flex flex-col gap-8 border-t border-ink-foreground/20 pt-8 md:flex-row md:items-end md:justify-between">
-            <p className="max-w-md text-lg text-ink-foreground/80">
-              Mesas, pias, bancadas e equipamentos em aço inox para cozinhas industriais e espaços gourmet — de linha ou sob medida.
-            </p>
-            <div className="flex gap-3">
-              <a href={`${LOJA}/comprar/`} className="bg-signal px-7 py-4 font-semibold text-accent-foreground transition hover:brightness-110">Ver produtos →</a>
-              <a href={WHATS} className="border border-ink-foreground/40 px-7 py-4 font-semibold transition hover:bg-ink-foreground hover:text-ink">WhatsApp</a>
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="shell footer-main">
+        <div className="footer-brand-column">
+          <Link to="/" aria-label="MetalBoa, início">
+            <Brand light />
+          </Link>
+          <p>Engenharia e soluções em aço inox para operações que não podem parar.</p>
+        </div>
+        <div className="footer-links">
+          <p className="footer-heading">Explore</p>
+          {navItems.slice(1).map((item) => (
+            <Link key={item.key} to={item.href}>
+              {item.label}
+            </Link>
+          ))}
+        </div>
+        <div className="footer-links footer-contact">
+          <p className="footer-heading">Vamos conversar</p>
+          <a href={WHATS} target="_blank" rel="noreferrer">
+            WhatsApp: (31) 97177-5866
+          </a>
+          <a href={PHONE}>Telefone: (31) 3621-2931</a>
+          <a href="mailto:contato@metalboa.com.br">contato@metalboa.com.br</a>
+          <a href={ADDRESS} target="_blank" rel="noreferrer">
+            R. São Paulo, 229 · Celvia
+            <br />
+            Vespasiano · MG · 33200-608
+          </a>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <div className="shell footer-bottom-inner">
+          <span>
+            © {new Date().getFullYear()} Metalúrgica Lisboa · MetalBoa. Todos os direitos
+            reservados.
+          </span>
+          <a href="https://www.metalboa.com.br/" target="_blank" rel="noreferrer">
+            Acesse nossa loja online <ArrowUpRight size={13} />
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function ContactBand() {
+  return (
+    <section className="contact-band">
+      <div className="shell contact-band-inner">
+        <div>
+          <p className="eyebrow eyebrow-light">O próximo passo começa com uma conversa</p>
+          <h2>
+            Seu desafio merece
+            <br />
+            um projeto à altura.
+          </h2>
+        </div>
+        <Link to="/contato" className="button button-light">
+          Converse com nossa equipe <ArrowRight size={16} />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function HomePage() {
+  return <SitePage current="home" />;
+}
+
+export function SitePage({ current }: { current: PageKey }) {
+  const page = pages[current];
+  const isHome = current === "home";
+  const isContact = current === "contato";
+
+  return (
+    <div className="site-shell">
+      <Header current={current} />
+      <main>
+        <section className={`hero ${isHome ? "hero-home" : "hero-inner"}`}>
+          <img src={page.image} alt={page.imageAlt} className="hero-image" />
+          <div className="hero-shade" />
+          <div className="shell hero-content">
+            <div className="hero-copy">
+              <p className="eyebrow eyebrow-light">
+                <span className="eyebrow-dot" />
+                {page.eyebrow}
+              </p>
+              <h1>{page.title}</h1>
+              <p className="hero-description">{page.description}</p>
+              <div className="hero-actions">
+                <Link to="/contato" className="button button-primary">
+                  {isContact ? "Iniciar conversa" : "Fale sobre seu projeto"}{" "}
+                  <ArrowRight size={16} />
+                </Link>
+                {isHome && (
+                  <a href="#solucoes" className="button button-outline">
+                    Conheça nossas soluções <ArrowDown size={15} />
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="hero-side-note">
+              <span className="hero-side-line" /> Precisão que conecta cada etapa.
+            </div>
+          </div>
+          {isHome && (
+            <a href="#solucoes" className="scroll-cue" aria-label="Descer até as soluções">
+              <span>Role para explorar</span>
+              <ArrowDown size={15} />
+            </a>
+          )}
+        </section>
+
+        {isHome ? <HomeContent /> : <InteriorContent current={current} />}
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function HomeContent() {
+  return (
+    <>
+      <section className="intro-section section-pad">
+        <div className="shell intro-grid">
+          <div className="intro-label">
+            <span className="section-index">01 / QUEM SOMOS</span>
+            <span className="index-rule" />
+          </div>
+          <div className="intro-copy">
+            <p className="eyebrow">Uma parceria que vai além do produto</p>
+            <h2>
+              Engenharia próxima.
+              <br />
+              <span>Resultado de verdade.</span>
+            </h2>
+            <div className="intro-bottom">
+              <p>
+                A MetalBoa transforma necessidades de operação em soluções funcionais de aço inox.
+                Com fabricação própria e atendimento consultivo, atuamos lado a lado com cada
+                cliente, do primeiro desenho à entrega.
+              </p>
+              <Link to="/contato" className="text-link">
+                Conheça nosso jeito de trabalhar <MoveRight size={16} />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* faixa */}
-      <div className="overflow-hidden border-y border-border bg-background py-4">
-        <div className="marquee flex w-max gap-10 whitespace-nowrap font-mono text-sm uppercase tracking-widest text-muted-foreground">
-          {Array.from({ length: 2 }).flatMap((_, i) =>
-            ["Inox 304", "Sob medida", "Atacado e varejo", "Entrega para todo o Brasil", "Solda TIG", "Acabamento escovado"].map((t) => (
-              <span key={t + i} className="flex items-center gap-10">{t}<span className="text-signal">✕</span></span>
-            )),
-          )}
-        </div>
-      </div>
-
-      {/* linhas */}
-      <section className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
-        <div className="mb-14 flex items-end justify-between gap-6">
-          <h2 className="text-5xl font-black leading-none tracking-tight [font-stretch:80%] md:text-7xl">Duas linhas.<br />Um padrão.</h2>
-          <p className="hidden max-w-xs text-muted-foreground md:block">Do restaurante que serve 500 refeições por dia à varanda do fim de semana.</p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          {linhas.map((l) => (
-            <a key={l.n} href={l.href} className="group relative block overflow-hidden bg-muted">
-              <img src={l.img} alt={l.t} loading="lazy" width={1024} height={1280} className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-105" />
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-ink/90 to-transparent p-8 text-ink-foreground">
-                <div>
-                  <span className="font-mono text-xs text-signal">{l.n}</span>
-                  <h3 className="mt-1 text-3xl font-bold md:text-4xl">{l.t}</h3>
-                  <p className="mt-2 max-w-sm text-sm text-ink-foreground/75">{l.d}</p>
-                </div>
-                <span className="text-3xl transition group-hover:translate-x-1 group-hover:text-signal">→</span>
-              </div>
-            </a>
-          ))}
-        </div>
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {[["Atacado", "Condições especiais para revendas, construtoras e redes.", "atacado"], ["Varejo", "Compre a peça que precisa, direto da fábrica.", "varejo"]].map(([t, d, s]) => (
-            <a key={s} href={`${LOJA}/${s}/`} className="group flex items-center justify-between border border-border p-8 transition hover:border-foreground">
-              <div>
-                <h3 className="text-2xl font-bold">{t}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{d}</p>
-              </div>
-              <span className="text-2xl group-hover:text-signal">→</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* porque */}
-      <section className="bg-ink text-ink-foreground">
-        <div className="mx-auto grid max-w-[1400px] md:grid-cols-2">
-          <img src={fabrica} alt="Soldador trabalhando em chapa de aço inox" loading="lazy" width={1280} height={1024} className="h-full min-h-[420px] w-full object-cover" />
-          <div className="px-6 py-20 md:px-16 md:py-28">
-            <p className="font-mono text-xs uppercase tracking-[0.3em] text-signal">Por que a MetalBoa</p>
-            <h2 className="mt-5 text-4xl font-black leading-[0.95] tracking-tight [font-stretch:80%] md:text-6xl">Cada peça passa pela mão de quem entende de metal.</h2>
-            <p className="mt-6 max-w-md text-ink-foreground/70">
-              Fabricação própria, chapa de qualidade e acabamento caprichado. Você fala direto com quem produz — sem intermediário e com projeto do jeito que o seu espaço pede.
+      <section id="solucoes" className="solutions-section section-pad">
+        <div className="shell">
+          <div className="section-heading-row">
+            <div>
+              <span className="section-index">02 / ONDE ATUAMOS</span>
+              <h2>
+                Soluções que acompanham
+                <br />a realidade da operação.
+              </h2>
+            </div>
+            <p>
+              Projetos para diferentes segmentos, com atenção a cada espaço, processo e necessidade.
             </p>
-            <dl className="mt-12 grid grid-cols-2 gap-px bg-ink-foreground/15">
-              {[["Sob medida", "Projetos personalizados"], ["Direto", "Preço de fábrica"], ["Robusto", "Uso profissional"], ["Brasil", "Enviamos para todo o país"]].map(([a, b]) => (
-                <div key={a} className="bg-ink p-5">
-                  <dt className="text-xl font-bold">{a}</dt>
-                  <dd className="mt-1 text-sm text-ink-foreground/60">{b}</dd>
+          </div>
+          <div className="solution-grid">
+            {audienceCards.map((card) => (
+              <Link
+                key={card.key}
+                to={card.key === "cozinhas" ? "/cozinhas-industriais" : "/gourmet"}
+                className="solution-card"
+              >
+                <img src={card.image} alt={card.alt} loading="lazy" />
+                <div className="solution-overlay" />
+                <span className="solution-number">{card.number} / 02</span>
+                <div className="solution-card-copy">
+                  <div>
+                    <h3>{card.title}</h3>
+                    <p>{card.description}</p>
+                  </div>
+                  <span className="round-arrow">
+                    <ArrowUpRight size={18} />
+                  </span>
                 </div>
-              ))}
-            </dl>
+              </Link>
+            ))}
+          </div>
+          <div className="commercial-paths">
+            <div>
+              <span className="section-index">ATENDIMENTO COMERCIAL</span>
+              <h3>Um canal para cada parceria.</h3>
+            </div>
+            <Link to="/atacado" className="commercial-link">
+              <span>
+                <strong>Atacado</strong>
+                <small>Parceria e fornecimento para empresas</small>
+              </span>
+              <ArrowRight size={17} />
+            </Link>
+            <Link to="/varejo" className="commercial-link">
+              <span>
+                <strong>Varejo</strong>
+                <small>Atendimento direto para sua necessidade</small>
+              </span>
+              <ArrowRight size={17} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* vantagens */}
-      <section className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
-        <h2 className="max-w-3xl text-5xl font-black leading-none tracking-tight [font-stretch:80%] md:text-7xl">Por que inox, e não outra coisa.</h2>
-        <ol className="mt-16 border-t border-foreground">
-          {vantagens.map(([t, d], i) => (
-            <li key={t} className="grid gap-2 border-b border-border py-8 md:grid-cols-[120px_1fr_1fr] md:items-baseline">
-              <span className="font-mono text-sm text-signal">0{i + 1}</span>
-              <h3 className="text-2xl font-bold md:text-3xl">{t}</h3>
-              <p className="text-muted-foreground">{d}</p>
+      <section className="approach-section">
+        <div className="approach-image-wrap">
+          <img
+            src={fabrica}
+            alt="Detalhe da fabricação e do trabalho com aço inox"
+            loading="lazy"
+          />
+        </div>
+        <div className="approach-copy">
+          <span className="section-index section-index-light">03 / NOSSO DIFERENCIAL</span>
+          <h2>O encaixe perfeito entre desafio e solução.</h2>
+          <p>
+            Um bom equipamento começa com uma pergunta bem feita. Entendemos o ambiente, a rotina e
+            os objetivos da sua operação antes de recomendar caminhos.
+          </p>
+          <ul className="approach-list">
+            <li>
+              <Check size={17} /> Escuta técnica e atendimento direto
             </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* cta */}
-      <section className="bg-signal text-accent-foreground">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-8 px-6 py-20 md:flex-row md:items-center md:justify-between md:px-10">
-          <h2 className="text-4xl font-black leading-none tracking-tight [font-stretch:80%] md:text-6xl">Tem um projeto em mente?</h2>
-          <a href={WHATS} className="bg-ink px-8 py-5 text-lg font-semibold text-ink-foreground transition hover:bg-ink/85">Chamar no WhatsApp · (31) 97177-5866</a>
+            <li>
+              <Check size={17} /> Desenvolvimento alinhado ao seu espaço
+            </li>
+            <li>
+              <Check size={17} /> Fabricação própria em aço inox
+            </li>
+          </ul>
+          <Link to="/contato" className="text-link text-link-light">
+            Conte para nós sobre o seu projeto <MoveRight size={16} />
+          </Link>
         </div>
       </section>
 
-      <footer className="bg-ink text-ink-foreground/60">
-        <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-4 px-6 py-10 font-mono text-xs uppercase tracking-widest md:flex-row md:px-10">
-          <span className="text-ink-foreground">METAL<span className="text-signal">BOA</span></span>
-          <a href={`${LOJA}/contato/`} className="hover:text-signal">Contato</a>
-          <span>© {new Date().getFullYear()} MetalBoa</span>
+      <section className="process-section section-pad">
+        <div className="shell">
+          <div className="section-heading-row process-heading">
+            <div>
+              <span className="section-index">04 / COMO TRABALHAMOS</span>
+              <h2>
+                Da conversa à<br />
+                solução pronta.
+              </h2>
+            </div>
+            <p>Um processo claro ajuda a transformar demandas complexas em decisões seguras.</p>
+          </div>
+          <div className="process-grid">
+            {[
+              [
+                "01",
+                "Entendimento",
+                "Ouvimos a necessidade e conhecemos a operação, o espaço e os objetivos.",
+              ],
+              [
+                "02",
+                "Desenvolvimento",
+                "Avaliamos as possibilidades e alinhamos uma solução adequada ao projeto.",
+              ],
+              [
+                "03",
+                "Fabricação",
+                "Produzimos com atenção aos detalhes, materiais e requisitos definidos.",
+              ],
+              [
+                "04",
+                "Acompanhamento",
+                "Mantemos o contato próximo em cada etapa até a entrega da solução.",
+              ],
+            ].map(([n, title, copy]) => (
+              <article key={n} className="process-step">
+                <span className="process-num">{n}</span>
+                <span className="process-icon">
+                  {n === "01" ? (
+                    <Phone size={19} />
+                  ) : n === "02" ? (
+                    <Wrench size={19} />
+                  ) : n === "03" ? (
+                    <Factory size={19} />
+                  ) : (
+                    <Check size={19} />
+                  )}
+                </span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
         </div>
-      </footer>
-    </div>
+      </section>
+
+      <ContactBand />
+    </>
   );
+}
+
+function InteriorContent({ current }: { current: PageKey }) {
+  const audience = current === "gourmet" || current === "cozinhas";
+  const trade = current === "atacado" || current === "varejo";
+  const title =
+    current === "gourmet"
+      ? "Funcionalidade com acabamento que acolhe."
+      : current === "cozinhas"
+        ? "Eficiência para cada etapa da sua cozinha."
+        : current === "atacado"
+          ? "Fornecimento com diálogo e previsibilidade."
+          : current === "varejo"
+            ? "Conte com orientação direta para escolher."
+            : "Estamos prontos para ouvir.";
+  const body =
+    current === "gourmet"
+      ? "Cada espaço tem sua dinâmica. Ajudamos a pensar soluções em inox que aproveitam melhor a área, apoiam a rotina e mantêm um acabamento coerente com o ambiente."
+      : current === "cozinhas"
+        ? "Bancadas, pias, prateleiras e equipamentos podem fazer parte de uma estrutura de trabalho mais fluida. A solução considera o fluxo, a limpeza e as exigências da sua operação."
+        : current === "atacado"
+          ? "Queremos construir relações comerciais duradouras. Conversamos sobre as necessidades do seu negócio, frequência de fornecimento e perfil dos produtos para orientar o atendimento."
+          : current === "varejo"
+            ? "Nosso time ajuda você a encontrar o caminho adequado para sua demanda. Conte qual equipamento ou solução está procurando para receber um atendimento atencioso e objetivo."
+            : "Você pode falar com nossa equipe por WhatsApp, telefone ou e-mail. Se preferir, visite nossa unidade em Vespasiano, Minas Gerais.";
+
+  return (
+    <>
+      <section className="interior-intro section-pad">
+        <div className="shell interior-grid">
+          <div>
+            <span className="section-index">
+              {current === "contato"
+                ? "01 / CANAIS DE ATENDIMENTO"
+                : trade
+                  ? "01 / RELACIONAMENTO COMERCIAL"
+                  : "01 / SOLUÇÕES POR APLICAÇÃO"}
+            </span>
+            <span className="interior-icon">
+              {current === "contato" ? (
+                <Phone size={20} />
+              ) : trade ? (
+                <ArrowRight size={20} />
+              ) : (
+                <Wrench size={20} />
+              )}
+            </span>
+          </div>
+          <div>
+            <h2>{title}</h2>
+            <p>{body}</p>
+            {current !== "contato" && (
+              <a href={WHATS} target="_blank" rel="noreferrer" className="text-link">
+                Converse com um especialista <MoveRight size={16} />
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+      {audience && (
+        <section className="application-section">
+          <div className="shell application-grid">
+            <img
+              src={current === "gourmet" ? gourmet : industrial}
+              alt={
+                current === "gourmet"
+                  ? "Projeto de área gourmet com detalhes de inox"
+                  : "Estrutura e equipamentos em inox para cozinha industrial"
+              }
+              loading="lazy"
+            />
+            <div>
+              <span className="section-index">02 / PROJETO COM PROPÓSITO</span>
+              <h2>Feito para funcionar bem todos os dias.</h2>
+              <p>
+                Materiais, dimensões e acabamentos fazem diferença na experiência de quem usa o
+                espaço. Avaliamos o contexto do projeto e a rotina para orientar escolhas que façam
+                sentido.
+              </p>
+              <ul className="approach-list application-list">
+                <li>
+                  <Check size={17} /> Atenção às dimensões e ao espaço disponível
+                </li>
+                <li>
+                  <Check size={17} /> Materiais adequados à rotina de uso
+                </li>
+                <li>
+                  <Check size={17} /> Orientação próxima desde a primeira conversa
+                </li>
+              </ul>
+              <Link to="/contato" className="button button-primary">
+                Solicite atendimento <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+      {trade && (
+        <section className="trade-section section-pad">
+          <div className="shell trade-grid">
+            <article>
+              <span>01</span>
+              <h3>Entender o seu negócio</h3>
+              <p>Conhecemos o perfil da sua empresa e o que você precisa atender.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Construir a proposta</h3>
+              <p>Alinhamos produtos, volumes e condições diretamente com a equipe.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Manter a parceria</h3>
+              <p>Acompanhamos o atendimento e buscamos relações de longo prazo.</p>
+            </article>
+          </div>
+        </section>
+      )}
+      {isContactPanel(current) && (
+        <section className="contact-details section-pad">
+          <div className="shell contact-details-grid">
+            <a href={WHATS} target="_blank" rel="noreferrer" className="contact-detail-card">
+              <span>WHATSAPP</span>
+              <strong>(31) 97177-5866</strong>
+              <small>Fale com a equipe comercial</small>
+              <ArrowUpRight size={18} />
+            </a>
+            <a href={PHONE} className="contact-detail-card">
+              <span>TELEFONE</span>
+              <strong>(31) 3621-2931</strong>
+              <small>Atendimento MetalBoa</small>
+              <ArrowUpRight size={18} />
+            </a>
+            <a href="mailto:contato@metalboa.com.br" className="contact-detail-card">
+              <span>E-MAIL</span>
+              <strong>contato@metalboa.com.br</strong>
+              <small>Envie os detalhes do seu projeto</small>
+              <ArrowUpRight size={18} />
+            </a>
+            <a href={ADDRESS} target="_blank" rel="noreferrer" className="contact-detail-card">
+              <span>ENDEREÇO</span>
+              <strong>Vespasiano · MG</strong>
+              <small>R. São Paulo, 229 · Celvia</small>
+              <ArrowUpRight size={18} />
+            </a>
+          </div>
+        </section>
+      )}
+      <ContactBand />
+    </>
+  );
+}
+
+function isContactPanel(current: PageKey) {
+  return current === "contato";
 }

@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AtacadoRouteImport } from './routes/atacado'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as CozinhasIndustriaisRouteImport } from './routes/cozinhas-industriais'
+import { Route as GourmetRouteImport } from './routes/gourmet'
+import { Route as VarejoRouteImport } from './routes/varejo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AtacadoRoute = AtacadoRouteImport.update({
+  id: '/atacado',
+  path: '/atacado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CozinhasIndustriaisRoute = CozinhasIndustriaisRouteImport.update({
+  id: '/cozinhas-industriais',
+  path: '/cozinhas-industriais',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GourmetRoute = GourmetRouteImport.update({
+  id: '/gourmet',
+  path: '/gourmet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VarejoRoute = VarejoRouteImport.update({
+  id: '/varejo',
+  path: '/varejo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/atacado': typeof AtacadoRoute
+  '/contato': typeof ContatoRoute
+  '/cozinhas-industriais': typeof CozinhasIndustriaisRoute
+  '/gourmet': typeof GourmetRoute
+  '/varejo': typeof VarejoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/atacado': typeof AtacadoRoute
+  '/contato': typeof ContatoRoute
+  '/cozinhas-industriais': typeof CozinhasIndustriaisRoute
+  '/gourmet': typeof GourmetRoute
+  '/varejo': typeof VarejoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/atacado': typeof AtacadoRoute
+  '/contato': typeof ContatoRoute
+  '/cozinhas-industriais': typeof CozinhasIndustriaisRoute
+  '/gourmet': typeof GourmetRoute
+  '/varejo': typeof VarejoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/atacado'
+    | '/contato'
+    | '/cozinhas-industriais'
+    | '/gourmet'
+    | '/varejo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/atacado'
+    | '/contato'
+    | '/cozinhas-industriais'
+    | '/gourmet'
+    | '/varejo'
+  id:
+    | '__root__'
+    | '/'
+    | '/atacado'
+    | '/contato'
+    | '/cozinhas-industriais'
+    | '/gourmet'
+    | '/varejo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AtacadoRoute: typeof AtacadoRoute
+  ContatoRoute: typeof ContatoRoute
+  CozinhasIndustriaisRoute: typeof CozinhasIndustriaisRoute
+  GourmetRoute: typeof GourmetRoute
+  VarejoRoute: typeof VarejoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/atacado': {
+      id: '/atacado'
+      path: '/atacado'
+      fullPath: '/atacado'
+      preLoaderRoute: typeof AtacadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cozinhas-industriais': {
+      id: '/cozinhas-industriais'
+      path: '/cozinhas-industriais'
+      fullPath: '/cozinhas-industriais'
+      preLoaderRoute: typeof CozinhasIndustriaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gourmet': {
+      id: '/gourmet'
+      path: '/gourmet'
+      fullPath: '/gourmet'
+      preLoaderRoute: typeof GourmetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/varejo': {
+      id: '/varejo'
+      path: '/varejo'
+      fullPath: '/varejo'
+      preLoaderRoute: typeof VarejoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AtacadoRoute: AtacadoRoute,
+  ContatoRoute: ContatoRoute,
+  CozinhasIndustriaisRoute: CozinhasIndustriaisRoute,
+  GourmetRoute: GourmetRoute,
+  VarejoRoute: VarejoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
