@@ -8,6 +8,7 @@ import {
   Menu,
   MoveRight,
   Phone,
+  Search,
   Wrench,
   X,
 } from "lucide-react";
@@ -128,14 +129,45 @@ const audienceCards = [
   },
 ];
 
+type CatalogProduct = { name: string; slug: string };
+
+const catalogs: Partial<Record<"atacado" | "varejo" | "cozinhas", CatalogProduct[]>> = {
+  atacado: [
+    { name: "Pasteleira", slug: "pasteleira" },
+    { name: "Forma de Gelo", slug: "forma-de-gelo" },
+    { name: "Estufas", slug: "estufas" },
+    { name: "Estantes inox", slug: "estantes-inox" },
+    { name: "Estantes aço galvanizado", slug: "estantes-aco-galvanizado" },
+    { name: "Carrinho de Hot Dog e Churrasco", slug: "carrinho-de-hot-dog-e-churrasco" },
+    { name: "Carrinho de Hot Dog", slug: "carrinho-de-hot-dog" },
+    { name: "Carrinho de Churrasco", slug: "carrinho-de-churrasco" },
+    { name: "Carro água de coco", slug: "carro-agua-de-coco" },
+    { name: "Forno Elétrico", slug: "forno-eletrico" },
+    { name: "Torre Gela Coco", slug: "torre-gela-coco" },
+    { name: "Carro de pipoca", slug: "carro-de-pipoca" },
+    { name: "Carro para transporte", slug: "carro-para-transporte" },
+  ],
+  varejo: [
+    { name: "Escorredor de Fritura", slug: "escorredor-de-fritura" },
+    { name: "Bancadas Inox", slug: "bancadas-inox" },
+    { name: "Colher Inox Para Caldeirão", slug: "colher-inox-para-caldeirao" },
+    { name: "Telas de alumínio", slug: "telas-de-aluminio" },
+    { name: "Taboleiros", slug: "taboleiros" },
+    { name: "Aquecedor de marmitas veicular", slug: "aquecedor-de-marmitas-veicular" },
+  ],
+  cozinhas: Array.from({ length: 26 }, (_, index) => {
+    const number = String(26 - index).padStart(2, "0");
+    return { name: `Layout Cozinha ${number}`, slug: `layout-cozinha-${Number(number)}` };
+  }),
+};
+
 function Brand({ light = false }: { light?: boolean }) {
   return (
-    <span className={`brand-mark ${light ? "brand-mark-light" : ""}`} aria-label="MetalBoa">
-      <span className="brand-word">
-        METAL<span>BOA</span>
-      </span>
-      <span className="brand-tagline">PROBLEMAS COMPLEXOS, SOLUÇÕES INTELIGENTES</span>
-    </span>
+    <img
+      className={`brand-logo ${light ? "brand-logo-light" : ""}`}
+      src="/images/metalboa-logo.png"
+      alt="MetalBoa — Problemas complexos, soluções inteligentes"
+    />
   );
 }
 
@@ -314,6 +346,18 @@ export function SitePage({ current }: { current: PageKey }) {
         {isHome ? <HomeContent /> : <InteriorContent current={current} />}
       </main>
       <Footer />
+      <a
+        className="whatsapp-float"
+        href={WHATS}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Fale com a MetalBoa pelo WhatsApp"
+      >
+        <span className="whatsapp-tooltip">Fale com a MetalBoa</span>
+        <svg aria-hidden="true" viewBox="0 0 32 32">
+          <path d="M16.02 3.2A12.66 12.66 0 0 0 5.18 22.4L3.5 28.52l6.27-1.64A12.66 12.66 0 1 0 16.02 3.2Zm0 22.99c-1.91 0-3.79-.51-5.43-1.48l-.39-.23-3.72.97.99-3.62-.25-.4A10.1 10.1 0 1 1 16.02 26.2Zm5.55-7.57c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.8-1.68-2.1-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.08-.79.38-.27.3-1.04 1.01-1.04 2.47s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.09 4.48.71.3 1.27.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z" />
+        </svg>
+      </a>
     </div>
   );
 }
@@ -616,6 +660,9 @@ function InteriorContent({ current }: { current: PageKey }) {
           </div>
         </section>
       )}
+      {(current === "atacado" || current === "varejo" || current === "cozinhas") && (
+        <ProductCatalog current={current} />
+      )}
       {isContactPanel(current) && (
         <section className="contact-details section-pad">
           <div className="shell contact-details-grid">
@@ -653,4 +700,82 @@ function InteriorContent({ current }: { current: PageKey }) {
 
 function isContactPanel(current: PageKey) {
   return current === "contato";
+}
+
+function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas" }) {
+  const [query, setQuery] = useState("");
+  const products = catalogs[current] ?? [];
+  const filteredProducts = products.filter((product) =>
+    product.name.toLocaleLowerCase("pt-BR").includes(query.trim().toLocaleLowerCase("pt-BR")),
+  );
+  const categoryHref =
+    current === "cozinhas"
+      ? "https://www.metalboa.com.br/cozinha-industrial/"
+      : `https://www.metalboa.com.br/${current}/`;
+  const title =
+    current === "cozinhas" ? "Cozinha industrial" : current === "atacado" ? "Atacado" : "Varejo";
+
+  return (
+    <section className="catalog-section section-pad" id="produtos">
+      <div className="shell">
+        <div className="section-heading-row catalog-heading">
+          <div>
+            <span className="section-index">CATÁLOGO METALBOA · {title.toUpperCase()}</span>
+            <h2>Produtos para a sua operação.</h2>
+          </div>
+          <p>
+            {products.length} produtos publicados na loja online. Consulte cada ficha para ver
+            detalhes e disponibilidade atual.
+          </p>
+        </div>
+        <div className="catalog-toolbar">
+          <label className="catalog-search">
+            <Search size={17} aria-hidden="true" />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar produto"
+              aria-label={`Buscar produtos de ${title}`}
+            />
+          </label>
+          <span className="catalog-count">
+            {filteredProducts.length} de {products.length} produtos
+          </span>
+        </div>
+        {filteredProducts.length > 0 ? (
+          <div className="product-grid">
+            {filteredProducts.map((product, index) => (
+              <a
+                key={product.slug}
+                className="product-card"
+                href={`https://www.metalboa.com.br/produtos/${product.slug}/`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="product-card-top">
+                  <span className="product-number">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="product-link-icon">
+                    <ArrowUpRight size={17} />
+                  </span>
+                </span>
+                <span className="product-card-name">{product.name}</span>
+                <span className="product-card-link">
+                  Ver ficha na loja online <MoveRight size={14} />
+                </span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="catalog-empty">Nenhum produto encontrado para “{query}”.</p>
+        )}
+        <div className="catalog-footer">
+          <span>Preços, estoque e especificações são informados na loja online.</span>
+          <a href={categoryHref} target="_blank" rel="noreferrer" className="text-link">
+            Ver categoria completa <ArrowUpRight size={15} />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
 }

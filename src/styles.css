@@ -189,32 +189,16 @@
 .brand-link {
   flex: 0 0 auto;
 }
-.brand-mark {
-  display: inline-flex;
-  flex-direction: column;
-  color: #092a4a;
-  line-height: 1;
+.brand-logo {
+  display: block;
+  width: clamp(190px, 19vw, 235px);
+  height: auto;
 }
-.brand-word {
-  font-family: "Montserrat", sans-serif;
-  font-size: 27px;
-  font-weight: 800;
-  letter-spacing: -0.055em;
-}
-.brand-word span {
-  color: #4674b7;
-}
-.brand-tagline {
-  margin-top: 5px;
-  font-size: 6.2px;
-  font-weight: 700;
-  letter-spacing: 0.115em;
-}
-.brand-mark-light {
-  color: #fff;
-}
-.brand-mark-light .brand-word span {
-  color: #56baff;
+.brand-logo-light {
+  width: clamp(205px, 22vw, 260px);
+  padding: 8px 10px;
+  border-radius: 2px;
+  background: #fff;
 }
 .main-nav {
   display: flex;
@@ -981,6 +965,187 @@
   color: #4674b7;
 }
 
+.catalog-section {
+  background: #fff;
+}
+.catalog-heading {
+  align-items: end;
+}
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.catalog-search {
+  display: flex;
+  width: min(100%, 370px);
+  min-height: 48px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #d8e1e9;
+  padding-inline: 14px;
+  color: #4674b7;
+  background: #fff;
+}
+.catalog-search:focus-within {
+  border-color: #4674b7;
+  box-shadow: 0 0 0 3px rgb(70 116 183 / 12%);
+}
+.catalog-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: #123554;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+}
+.catalog-search input::placeholder {
+  color: #8190a0;
+}
+.catalog-count {
+  color: #68798a;
+  font-size: 10px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.product-card {
+  display: flex;
+  min-height: 168px;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #e1e8ee;
+  padding: 17px;
+  background: #fff;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.product-card:hover {
+  border-color: #8ab2d8;
+  box-shadow: 0 10px 25px rgb(8 41 74 / 7%);
+  transform: translateY(-2px);
+}
+.product-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.product-number {
+  color: #4674b7;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.product-link-icon {
+  display: flex;
+  width: 31px;
+  height: 31px;
+  align-items: center;
+  justify-content: center;
+  color: #4674b7;
+  background: #eff6fb;
+}
+.product-card-name {
+  margin-block: 22px 18px;
+  color: #123554;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.product-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #68798a;
+  font-size: 9px;
+  font-weight: 600;
+}
+.product-card:hover .product-card-link {
+  color: #315d9c;
+}
+.catalog-empty {
+  border: 1px dashed #c9d7e3;
+  margin: 0;
+  padding: 30px;
+  color: #68798a;
+  font-size: 12px;
+  text-align: center;
+}
+.catalog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 20px;
+  border-top: 1px solid #e5ebf0;
+  padding-top: 18px;
+  color: #68798a;
+  font-size: 10px;
+}
+.whatsapp-float {
+  position: fixed;
+  z-index: 50;
+  right: max(24px, calc((100vw - 1380px) / 2));
+  bottom: 24px;
+  display: flex;
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  background: #4674b7;
+  box-shadow: 0 8px 24px rgb(8 41 74 / 24%);
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.whatsapp-float:hover {
+  background: #00a8ff;
+  transform: translateY(-3px);
+}
+.whatsapp-float svg {
+  width: 30px;
+  height: 30px;
+  fill: currentColor;
+}
+.whatsapp-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  width: max-content;
+  border-radius: 3px;
+  padding: 9px 12px;
+  color: #fff;
+  background: #092a4a;
+  box-shadow: 0 4px 14px rgb(8 41 74 / 15%);
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(4px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+.whatsapp-float:hover .whatsapp-tooltip,
+.whatsapp-float:focus-visible .whatsapp-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+.whatsapp-float:focus-visible {
+  outline: 3px solid #00a8ff;
+  outline-offset: 3px;
+}
+
 @media (min-width: 1500px) {
   .hero-home {
     min-height: 790px;
@@ -1028,11 +1193,11 @@
   .nav-row {
     min-height: 76px;
   }
-  .brand-word {
-    font-size: 24px;
+  .brand-logo {
+    width: clamp(160px, 38vw, 205px);
   }
-  .brand-tagline {
-    font-size: 5.5px;
+  .brand-logo-light {
+    width: clamp(185px, 48vw, 230px);
   }
   .menu-toggle {
     display: block;
@@ -1283,6 +1448,31 @@
   }
   .contact-details-grid {
     grid-template-columns: 1fr;
+  }
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .product-card {
+    min-height: 148px;
+    padding: 13px;
+  }
+  .product-card-name {
+    font-size: 12px;
+  }
+  .catalog-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .whatsapp-float {
+    right: 16px;
+    bottom: 16px;
+    width: 56px;
+    height: 56px;
+  }
+  .whatsapp-float svg {
+    width: 28px;
+    height: 28px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
