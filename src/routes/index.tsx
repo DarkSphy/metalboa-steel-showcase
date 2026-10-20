@@ -181,10 +181,10 @@ const catalogs: Partial<Record<"atacado" | "varejo" | "cozinhas", CatalogProduct
 };
 
 const featuredProducts = [
-  { name: "Bancadas Inox", category: "VAREJO", slug: "bancadas-inox", href: "https://www.metalboa.com.br/produtos/bancadas-inox/" },
-  { name: "Estantes inox", category: "ATACADO", slug: "estantes-inox", href: "https://www.metalboa.com.br/produtos/estantes-inox/" },
-  { name: "Pasteleira", category: "ATACADO", slug: "pasteleira", href: "https://www.metalboa.com.br/produtos/pasteleira/" },
-  { name: "Escorredor de Fritura", category: "VAREJO", slug: "escorredor-de-fritura", href: "https://www.metalboa.com.br/produtos/escorredor-de-fritura/" },
+  { name: "Bancadas Inox", category: "VAREJO", slug: "bancadas-inox", image: industrial, imageAlt: "Bancada em inox em ambiente profissional" },
+  { name: "Estantes inox", category: "ATACADO", slug: "estantes-inox", image: "/images/products/estantes-inox.webp", imageAlt: "Estante de aço inox MetalBoa" },
+  { name: "Pasteleira", category: "ATACADO", slug: "pasteleira", image: "/images/products/pasteleira.webp", imageAlt: "Pasteleira MetalBoa em aço inox" },
+  { name: "Escorredor de Fritura", category: "VAREJO", slug: "escorredor-de-fritura", image: "/images/products/escorredor-fritura.png", imageAlt: "Escorredor de fritura em aço inox MetalBoa" },
 ];
 
 function Brand({ light = false }: { light?: boolean }) {
@@ -284,9 +284,7 @@ function Footer() {
             © {new Date().getFullYear()} Metalúrgica Lisboa · MetalBoa. Todos os direitos
             reservados.
           </span>
-          <a href="https://www.metalboa.com.br/" target="_blank" rel="noreferrer">
-            Acesse nossa loja online <ArrowUpRight size={13} />
-          </a>
+          <Link to="/varejo">Explore nossos produtos <ArrowUpRight size={13} /></Link>
         </div>
       </div>
     </footer>
@@ -376,6 +374,81 @@ export function SitePage({ current }: { current: PageKey }) {
   );
 }
 
+const productPageCopy: Record<string, { text: string; points: string[] }> = {
+  "bancadas-inox": {
+    text: "Mesas e bancadas em aço inox para ambientes comerciais e residenciais. O material combina durabilidade e facilidade de higienização, com aplicações em restaurantes, bares, cozinhas profissionais, laboratórios, churrasqueiras e áreas de serviço.",
+    points: ["Aplicações comerciais e residenciais", "Fácil higienização", "Consulte opções e medidas com a equipe"],
+  },
+  "estantes-inox": {
+    text: "Prateleiras em aço inox para organização e armazenamento em cozinhas domésticas e profissionais, restaurantes, lanchonetes e outros ambientes comerciais. Há opções lisas e gradeadas, em diferentes configurações.",
+    points: ["Opções lisas e gradeadas", "Configurações com 3, 4 ou 6 prateleiras", "Medidas variam conforme o modelo"],
+  },
+  pasteleira: {
+    text: "Equipamento para preparo de frituras com tacho removível, que facilita a limpeza e a troca de óleo. Conforme o modelo, acompanha prateleiras em aço inox, escorredor, tacho esmaltado, queimador a gás e conjunto de mangueira, registro e abraçadeiras para alta pressão.",
+    points: ["Modelos MLPB, MLPAI e MLPFI", "Medidas entre 53 × 53 × 85 cm e 70 × 55 × 174 cm", "Consulte os itens inclusos em cada configuração"],
+  },
+  "escorredor-de-fritura": {
+    text: "Escorredor em aço inox para drenar o óleo após a fritura e manter a área de preparo mais organizada. A MetalBoa também fabrica este produto sob medida.",
+    points: ["Construção em aço inox", "Pode ser fabricado sob medida", "Consulte dimensões e opções"],
+  },
+  "forma-de-gelo": {
+    text: "Forma em aço inox para produção de barras de gelo de 10 kg ou 25 kg. Também pode ser fabricada em outros tamanhos, conforme o projeto do cliente. As soldas são feitas pelo processo TIG e as formas são testadas contra vazamento.",
+    points: ["Modelos padrão para barras de 10 kg e 25 kg", "Opções em ligas inox das linhas 200, 300 e 400", "Fabricação conforme projeto, mediante consulta"],
+  },
+};
+
+const productPhotos: Record<string, string> = {
+  "estantes-inox": "/images/products/estantes-inox.webp",
+  pasteleira: "/images/products/pasteleira.webp",
+  "escorredor-de-fritura": "/images/products/escorredor-fritura.png",
+};
+
+export function ProductDetailPage({ slug }: { slug: string }) {
+  const found = Object.entries(catalogs).flatMap(([category, products]) =>
+    (products ?? []).map((product) => ({ ...product, category: category as "atacado" | "varejo" | "cozinhas" })),
+  ).find((product) => product.slug === slug);
+  const featured = featuredProducts.find((product) => product.slug === slug);
+  const name = found?.name ?? featured?.name ?? slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const category = found?.category ?? (featured?.category === "ATACADO" ? "atacado" : "varejo");
+  const copy = productPageCopy[slug] ?? {
+    text: `${name} faz parte do catálogo MetalBoa. Fale com nossa equipe para conhecer opções, confirmar materiais, dimensões, aplicação e disponibilidade para sua necessidade.`,
+    points: ["Atendimento direto com a equipe MetalBoa", "Consulte configurações e dimensões", "Disponibilidade confirmada no atendimento"],
+  };
+  const image = productPhotos[slug] ?? (slug === "bancadas-inox" ? industrial : fabrica);
+  const whatsappLink = `${WHATS}?text=${encodeURIComponent(`Olá! Tenho interesse no produto ${name}. Poderiam me passar mais informações?`)}`;
+
+  return (
+    <div className="site-shell">
+      <Header current={category} />
+      <main>
+        <nav className="shell product-breadcrumb" aria-label="Navegação estrutural">
+          <Link to="/">Início</Link><span>/</span>
+          <Link to={category === "cozinhas" ? "/cozinhas-industriais" : `/${category}`}>{category === "cozinhas" ? "Cozinhas industriais" : category}</Link><span>/</span><span>{name}</span>
+        </nav>
+        <section className="product-detail-section section-pad">
+          <div className="shell product-detail-grid">
+            <div className="product-detail-image"><img src={image} alt={name} /></div>
+            <div className="product-detail-copy">
+              <span className="section-index">METALBOA · {category === "cozinhas" ? "COZINHAS INDUSTRIAIS" : category.toUpperCase()}</span>
+              <h1>{name}</h1>
+              <p>{copy.text}</p>
+              <ul className="product-spec-list">{copy.points.map((point) => <li key={point}><Check size={16} />{point}</li>)}</ul>
+              <div className="product-price-card"><span>Preço e disponibilidade</span><strong>Consulte nossa equipe</strong><small>As condições variam conforme produto, configuração e quantidade.</small></div>
+              <a href={whatsappLink} target="_blank" rel="noreferrer" className="button button-primary product-order-button">Consultar pelo WhatsApp <ArrowUpRight size={16} /></a>
+              <p className="product-support-copy">Atendimento direto com a equipe MetalBoa. Se preferir, <Link to="/contato">fale com a gente por outros canais</Link>.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+      <a className="whatsapp-float" href={WHATS} target="_blank" rel="noreferrer" aria-label="Fale com a MetalBoa pelo WhatsApp">
+        <span className="whatsapp-tooltip">Fale com a MetalBoa</span>
+        <svg aria-hidden="true" viewBox="0 0 32 32"><path d="M16.02 3.2A12.66 12.66 0 0 0 5.18 22.4L3.5 28.52l6.27-1.64A12.66 12.66 0 1 0 16.02 3.2Zm0 22.99c-1.91 0-3.79-.51-5.43-1.48l-.39-.23-3.72.97.99-3.62-.25-.4A10.1 10.1 0 1 1 16.02 26.2Zm5.55-7.57c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.8-1.68-2.1-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.08-.79.38-.27.3-1.04 1.01-1.04 2.47s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.09 4.48.71.3 1.27.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z" /></svg>
+      </a>
+    </div>
+  );
+}
+
 function HomeContent() {
   return (
     <>
@@ -417,10 +490,10 @@ function HomeContent() {
           </div>
           <div className="featured-grid">
             {featuredProducts.map((product, index) => (
-              <a className="featured-card" href={product.href} target="_blank" rel="noreferrer" key={product.slug}>
-                <span className="featured-card-art" aria-hidden="true">
+              <a className="featured-card" href={`/produtos/${product.slug}`} key={product.slug}>
+                <span className="featured-card-art">
+                  <img src={product.image} alt={product.imageAlt} loading="lazy" />
                   <span className="featured-card-number">{String(index + 1).padStart(2, "0")}</span>
-                  <Factory size={39} strokeWidth={1.15} />
                   <ArrowUpRight size={18} className="featured-card-arrow" />
                 </span>
                 <span className="featured-card-copy">
@@ -857,10 +930,6 @@ function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas
   const filteredProducts = products.filter((product) =>
     product.name.toLocaleLowerCase("pt-BR").includes(query.trim().toLocaleLowerCase("pt-BR")),
   );
-  const categoryHref =
-    current === "cozinhas"
-      ? "https://www.metalboa.com.br/cozinha-industrial/"
-      : `https://www.metalboa.com.br/${current}/`;
   const title =
     current === "cozinhas" ? "Cozinha industrial" : current === "atacado" ? "Atacado" : "Varejo";
 
@@ -873,8 +942,8 @@ function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas
             <h2>Produtos para a sua operação.</h2>
           </div>
           <p>
-            {products.length} produtos publicados na loja online. Consulte cada ficha para ver
-            detalhes e disponibilidade atual.
+            {products.length} opções no catálogo. Acesse cada produto para consultar detalhes e
+            conversar com nossa equipe.
           </p>
         </div>
         <div className="catalog-toolbar">
@@ -898,9 +967,7 @@ function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas
               <a
                 key={product.slug}
                 className="product-card"
-                href={`https://www.metalboa.com.br/produtos/${product.slug}/`}
-                target="_blank"
-                rel="noreferrer"
+                href={`/produtos/${product.slug}`}
               >
                 <span className="product-card-top">
                   <span className="product-number">{String(index + 1).padStart(2, "0")}</span>
@@ -910,7 +977,7 @@ function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas
                 </span>
                 <span className="product-card-name">{product.name}</span>
                 <span className="product-card-link">
-                  Ver ficha na loja online <MoveRight size={14} />
+                  Ver produto <MoveRight size={14} />
                 </span>
               </a>
             ))}
@@ -919,10 +986,8 @@ function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas
           <p className="catalog-empty">Nenhum produto encontrado para “{query}”.</p>
         )}
         <div className="catalog-footer">
-          <span>Preços, estoque e especificações são informados na loja online.</span>
-          <a href={categoryHref} target="_blank" rel="noreferrer" className="text-link">
-            Ver categoria completa <ArrowUpRight size={15} />
-          </a>
+          <span>Preços, estoque e configurações são confirmados no atendimento.</span>
+          <Link to="/contato" className="text-link">Fale com nossa equipe <ArrowUpRight size={15} /></Link>
         </div>
       </div>
     </section>
