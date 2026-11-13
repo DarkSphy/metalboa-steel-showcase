@@ -457,19 +457,19 @@ export function SitePage({ current }: { current: PageKey }) {
 }
 
 const productPageCopy: Record<string, { text: string; points: string[] }> = {
-  "estufas": { text: "Estufas para exposição de alimentos em balcões de atendimento.", points: ["Uso em balcão de serviço", "Consulte capacidade, alimentação elétrica e dimensões"] },
+  "estufas": { text: "Expositores sob medida para padarias, lanchonetes e restaurantes, com versões para aquecer, resfriar ou expor alimentos.", points: ["Versões aquecidas a gás ou elétricas","Opções refrigeradas com placas de gelo ou motor","Bandejas e acabamento externo em aço inox"] },
   "estantes-aco-galvanizado": { text: "Estantes em aço galvanizado para organizar materiais e aproveitar a altura do ambiente.", points: ["Aço galvanizado", "Confirme medidas e carga por prateleira"] },
-  "carrinho-de-hot-dog-e-churrasco": { text: "Carrinho para operações que servem cachorro-quente e churrasco.", points: ["Uso em serviço móvel de alimentação", "Consulte acessórios e configuração"] },
-  "carrinho-de-hot-dog": { text: "Carrinho para organizar o preparo e o serviço de cachorro-quente.", points: ["Uso em serviço móvel de alimentação", "Consulte dimensões e itens inclusos"] },
+  "carrinho-de-hot-dog-e-churrasco": { text: "Carrinho para serviço móvel de cachorro-quente e churrasco, com corpo galvanizado e pintura eletrostática branca.", points: ["Tampo em aço inox 430","Recipientes e tampas em alumínio"] },
+  "carrinho-de-hot-dog": { text: "Carrinho para preparo e venda de cachorro-quente, com corpo galvanizado e pintura eletrostática branca.", points: ["Tampo em aço inox 430","Recipientes e tampas em alumínio"] },
   "carrinho-de-churrasco": { text: "Carrinho para preparo e serviço de churrasco em operações móveis.", points: ["Uso em serviço de alimentação", "Consulte dimensões e configuração"] },
   "carro-agua-de-coco": { text: "Carro para operações de venda de água de coco.", points: ["Uso em pontos móveis de venda", "Consulte capacidade e acessórios"] },
-  "forno-eletrico": { text: "Forno elétrico para operações de preparo de alimentos.", points: ["Alimentação elétrica", "Confirme tensão, potência e capacidade"] },
-  "torre-gela-coco": { text: "Equipamento para operações de atendimento com água de coco gelada.", points: ["Aplicação em pontos de venda", "Confirme capacidade e requisitos de instalação"] },
-  "carro-de-pipoca": { text: "Carro para operações móveis de preparo e venda de pipoca.", points: ["Uso em pontos móveis de venda", "Consulte dimensões e itens inclusos"] },
-  "carro-para-transporte": { text: "Carro para movimentar itens durante a rotina da operação.", points: ["Uso em transporte interno", "Confirme dimensões e capacidade de carga"] },
-  "colher-inox-para-caldeirao": { text: "Colher em aço inox para mexer preparos em caldeirões.", points: ["Aço inox", "Consulte comprimento e tamanho da concha"] },
+  "forno-eletrico": { text: "Forno com controle digital da temperatura e ajuste independente das resistências.", points: ["220 V · 6 kW","Temperatura máxima de 450 °C","Câmara em inox série 400"] },
+  "torre-gela-coco": { text: "Resfria água de coco em uma serpentina de alumínio usando gelo, sem alimentação elétrica.", points: ["Tanque para cerca de 15 kg de gelo moído","Serpentina com capacidade aproximada de 650 ml","Inclui peneira e furador de coco"] },
+  "carro-de-pipoca": { text: "Carrinho com vitrine dividida para pipocas doces e salgadas.", points: ["Dimensões de 84 × 58 × 120 cm","Inclui pipoqueira e fogão de uma boca de baixa pressão","Tampo em inox 430"] },
+  "carro-para-transporte": { text: "Carrinho para movimentar alimentos, utensílios e ingredientes em cozinhas e serviços de alimentação.", points: ["Dimensões de 80 × 40 × 95 cm","Bandejas com 3 ou 8 cm de profundidade"] },
+  "colher-inox-para-caldeirao": { text: "Colher de cabo longo em aço inox série 300 para preparo em caldeirões.", points: ["MLCI60 · 60 cm","MLCI80 · 80 cm","MLCI100 · 100 cm"] },
   "telas-de-aluminio": { text: "Telas em alumínio para operações de preparo de alimentos.", points: ["Alumínio", "Consulte formatos, dimensões e aplicações"] },
-  "taboleiros": { text: "Taboleiros para apoiar a organização e o manuseio de preparos.", points: ["Consulte material, dimensões e aplicações"] },
+  "taboleiros": { text: "Conjunto de tabuleiros em aço inox para uso no forno, na geladeira ou no freezer.", points: ["Limpeza com esponja macia e sabão neutro","Misturas muito líquidas podem vazar pelas quinas"] },
   "bancadas-inox": {
     text: "Mesas e bancadas em aço inox para ambientes comerciais e residenciais. O material combina durabilidade e facilidade de higienização, com aplicações em restaurantes, bares, cozinhas profissionais, laboratórios, churrasqueiras e áreas de serviço.",
     points: ["Aplicações comerciais e residenciais", "Fácil higienização", "Consulte opções e medidas com a equipe"],
