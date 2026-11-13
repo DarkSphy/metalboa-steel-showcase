@@ -314,6 +314,86 @@ function ContactBand() {
   );
 }
 
+const heaterPhotos = [
+  { label: "Vista em perspectiva", size: 1024 },
+  { label: "Painel frontal", size: 640 },
+  { label: "Abertura da porta", size: 640 },
+  { label: "Interior do aquecedor", size: 640 },
+  { label: "Vista superior com a porta aberta", size: 640 },
+  { label: "Grade interna", size: 640 },
+];
+
+function HeaterBanner() {
+  const [selected, setSelected] = useState(0);
+  const photo = heaterPhotos[selected];
+
+  return (
+    <section aria-labelledby="heater-title" className="relative border-b border-border bg-background">
+      <div className="mx-auto grid max-w-[1600px] items-stretch lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="flex flex-col justify-center px-6 py-10 sm:px-12 lg:py-16">
+          <p className="mb-5 font-mono text-xs uppercase tracking-[0.18em] text-primary">
+            Aquecedor veicular Metalboa
+          </p>
+          <h2 id="heater-title" className="font-display max-w-xl text-4xl font-bold leading-tight sm:text-5xl">
+            Refeição quente para quem trabalha em campo.
+          </h2>
+          <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground">
+            Compacto e com temperatura controlada por termostato, o aquecedor de marmitas
+            da Metalboa foi projetado para instalar no veículo sem cortes nem adaptações.
+          </p>
+          <dl className="mt-7 flex flex-wrap gap-x-8 gap-y-4 border-t border-border pt-5">
+            <div>
+              <dt className="text-xs text-muted-foreground">Capacidade</dt>
+              <dd className="font-semibold">4 ou 6 marmitas</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">Alimentação</dt>
+              <dd className="font-semibold">Bateria do veículo</dd>
+            </div>
+          </dl>
+          <a
+            href="/produtos/aquecedor-de-marmitas-veicular"
+            className="mt-8 inline-flex w-fit items-center gap-3 bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-ink"
+          >
+            Ver detalhes do aquecedor <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <div className="flex min-w-0 flex-col justify-center border-t border-border bg-white px-6 py-6 sm:px-10 lg:border-l lg:border-t-0">
+          <figure>
+            <div className="flex aspect-[5/4] max-h-[28rem] items-center justify-center overflow-hidden">
+              <img
+                src={`/aquecedor/${selected + 1}.webp`}
+                width={photo.size}
+                height={photo.size}
+                alt={photo.label}
+                fetchPriority={selected === 0 ? "high" : "auto"}
+                className="h-[125%] w-full object-contain"
+              />
+            </div>
+            <figcaption aria-live="polite" className="mt-2 text-center text-xs text-muted-foreground">
+              {photo.label}
+            </figcaption>
+          </figure>
+          <div role="group" aria-label="Fotos do aquecedor" className="mx-auto mt-4 grid w-full max-w-md grid-cols-6 gap-1.5 sm:gap-3">
+            {heaterPhotos.map(({ label }, index) => (
+              <button
+                key={label}
+                type="button"
+                aria-label={label}
+                aria-pressed={selected === index}
+                onClick={() => setSelected(index)}
+                className="aspect-square min-w-0 border border-border bg-white hover:border-primary aria-pressed:border-primary aria-pressed:ring-1 aria-pressed:ring-primary"
+              >
+                <img src={`/aquecedor/${index + 1}.webp`} alt="" className="h-full w-full object-contain" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HomePage() {
   return <SitePage current="home" />;
 }
@@ -327,6 +407,7 @@ export function SitePage({ current }: { current: PageKey }) {
     <div className="site-shell">
       <Header current={current} />
       <main>
+        {isHome && <HeaterBanner />}
         <section className={`hero ${isHome ? "hero-home" : "hero-inner"}`}>
           <img src={page.image} alt={page.imageAlt} className="hero-image" />
           <div className="hero-shade" />
