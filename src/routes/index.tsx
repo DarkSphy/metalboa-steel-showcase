@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowRight,
@@ -153,7 +153,7 @@ const audienceCards = [
 
 type CatalogProduct = { name: string; slug: string };
 
-const catalogs: Partial<Record<"atacado" | "varejo" | "cozinhas", CatalogProduct[]>> = {
+const catalogs: Partial<Record<"atacado" | "varejo", CatalogProduct[]>> = {
   atacado: [
     { name: "Pasteleira", slug: "pasteleira" },
     { name: "Forma de Gelo", slug: "forma-de-gelo" },
@@ -177,10 +177,7 @@ const catalogs: Partial<Record<"atacado" | "varejo" | "cozinhas", CatalogProduct
     { name: "Taboleiros", slug: "taboleiros" },
     { name: "Aquecedor de marmitas veicular", slug: "aquecedor-de-marmitas-veicular" },
   ],
-  cozinhas: Array.from({ length: 26 }, (_, index) => {
-    const number = String(26 - index).padStart(2, "0");
-    return { name: `Layout Cozinha ${number}`, slug: `layout-cozinha-${number}` };
-  }),
+
 };
 
 const featuredProducts = [
@@ -357,6 +354,7 @@ function HeaterBanner() {
           >
             Ver detalhes do aquecedor <span aria-hidden="true">→</span>
           </a>
+          <a href="#produtos" className="mt-4 w-fit text-sm font-semibold text-primary hover:underline">Explorar produtos ↓</a>
         </div>
         <div className="flex min-w-0 flex-col justify-center border-t border-border bg-white px-6 py-6 sm:px-10 lg:border-l lg:border-t-0">
           <figure>
@@ -407,7 +405,7 @@ export function SitePage({ current }: { current: PageKey }) {
     <div className="site-shell">
       <Header current={current} />
       <main>
-        {isHome && <HeaterBanner />}
+        {isHome && <><HeaterBanner /><ProductCatalog current="todos" /></>}
         <section className={`hero ${isHome ? "hero-home" : "hero-inner"}`}>
           <img src={page.image} alt={page.imageAlt} className="hero-image" />
           <div className="hero-shade" />
@@ -459,6 +457,19 @@ export function SitePage({ current }: { current: PageKey }) {
 }
 
 const productPageCopy: Record<string, { text: string; points: string[] }> = {
+  "estufas": { text: "Estufas para exposição de alimentos em balcões de atendimento.", points: ["Uso em balcão de serviço", "Consulte capacidade, alimentação elétrica e dimensões"] },
+  "estantes-aco-galvanizado": { text: "Estantes em aço galvanizado para organizar materiais e aproveitar a altura do ambiente.", points: ["Aço galvanizado", "Confirme medidas e carga por prateleira"] },
+  "carrinho-de-hot-dog-e-churrasco": { text: "Carrinho para operações que servem cachorro-quente e churrasco.", points: ["Uso em serviço móvel de alimentação", "Consulte acessórios e configuração"] },
+  "carrinho-de-hot-dog": { text: "Carrinho para organizar o preparo e o serviço de cachorro-quente.", points: ["Uso em serviço móvel de alimentação", "Consulte dimensões e itens inclusos"] },
+  "carrinho-de-churrasco": { text: "Carrinho para preparo e serviço de churrasco em operações móveis.", points: ["Uso em serviço de alimentação", "Consulte dimensões e configuração"] },
+  "carro-agua-de-coco": { text: "Carro para operações de venda de água de coco.", points: ["Uso em pontos móveis de venda", "Consulte capacidade e acessórios"] },
+  "forno-eletrico": { text: "Forno elétrico para operações de preparo de alimentos.", points: ["Alimentação elétrica", "Confirme tensão, potência e capacidade"] },
+  "torre-gela-coco": { text: "Equipamento para operações de atendimento com água de coco gelada.", points: ["Aplicação em pontos de venda", "Confirme capacidade e requisitos de instalação"] },
+  "carro-de-pipoca": { text: "Carro para operações móveis de preparo e venda de pipoca.", points: ["Uso em pontos móveis de venda", "Consulte dimensões e itens inclusos"] },
+  "carro-para-transporte": { text: "Carro para movimentar itens durante a rotina da operação.", points: ["Uso em transporte interno", "Confirme dimensões e capacidade de carga"] },
+  "colher-inox-para-caldeirao": { text: "Colher em aço inox para mexer preparos em caldeirões.", points: ["Aço inox", "Consulte comprimento e tamanho da concha"] },
+  "telas-de-aluminio": { text: "Telas em alumínio para operações de preparo de alimentos.", points: ["Alumínio", "Consulte formatos, dimensões e aplicações"] },
+  "taboleiros": { text: "Taboleiros para apoiar a organização e o manuseio de preparos.", points: ["Consulte material, dimensões e aplicações"] },
   "bancadas-inox": {
     text: "Mesas e bancadas em aço inox para ambientes comerciais e residenciais. O material combina durabilidade e facilidade de higienização, com aplicações em restaurantes, bares, cozinhas profissionais, laboratórios, churrasqueiras e áreas de serviço.",
     points: ["Aplicações comerciais e residenciais", "Fácil higienização", "Consulte opções e medidas com a equipe"],
@@ -483,11 +494,10 @@ const productPageCopy: Record<string, { text: string; points: string[] }> = {
 
 export function ProductDetailPage({ slug }: { slug: string }) {
   const found = Object.entries(catalogs).flatMap(([category, products]) =>
-    (products ?? []).map((product) => ({ ...product, category: category as "atacado" | "varejo" | "cozinhas" })),
+    (products ?? []).map((product) => ({ ...product, category: category as "atacado" | "varejo" })),
   ).find((product) => product.slug === slug);
-  const featured = featuredProducts.find((product) => product.slug === slug);
-  const name = found?.name ?? featured?.name ?? slug.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-  const category = found?.category ?? (featured?.category === "ATACADO" ? "atacado" : "varejo");
+  if (!found) throw notFound();
+  const { name, category } = found;
   const copy = productPageCopy[slug] ?? {
     text: `${name} faz parte do catálogo MetalBoa. Fale com nossa equipe para conhecer opções, confirmar materiais, dimensões, aplicação e disponibilidade para sua necessidade.`,
     points: ["Atendimento direto com a equipe MetalBoa", "Consulte configurações e dimensões", "Disponibilidade confirmada no atendimento"],
@@ -503,7 +513,7 @@ export function ProductDetailPage({ slug }: { slug: string }) {
       <main>
         <nav className="shell product-breadcrumb" aria-label="Navegação estrutural">
           <Link to="/">Início</Link><span>/</span>
-          <Link to={category === "cozinhas" ? "/cozinhas-industriais" : `/${category}`}>{category === "cozinhas" ? "Cozinhas industriais" : category}</Link><span>/</span><span>{name}</span>
+          <Link to={`/${category}`}>{category}</Link><span>/</span><span>{name}</span>
         </nav>
         <section className="product-detail-section section-pad">
           <div className="shell product-detail-grid">
@@ -518,12 +528,12 @@ export function ProductDetailPage({ slug }: { slug: string }) {
               ) : <div className="product-photo-missing"><Factory size={34} strokeWidth={1.3} /><p>O catálogo antigo não apresenta uma foto para este produto.</p></div>}
             </div>
             <div className="product-detail-copy">
-              <span className="section-index">METALBOA · {category === "cozinhas" ? "COZINHAS INDUSTRIAIS" : category.toUpperCase()}</span>
+              <span className="section-index">METALBOA · {category.toUpperCase()}</span>
               <h1>{name}</h1>
               <p>{copy.text}</p>
               <ul className="product-spec-list">{copy.points.map((point) => <li key={point}><Check size={16} />{point}</li>)}</ul>
               <div className="product-price-card"><span>Preço e disponibilidade</span><strong>Consulte nossa equipe</strong><small>As condições variam conforme produto, configuração e quantidade.</small></div>
-              <a href={whatsappLink} target="_blank" rel="noreferrer" className="button button-primary product-order-button">Consultar pelo WhatsApp <ArrowUpRight size={16} /></a>
+              <a href={whatsappLink} target="_blank" rel="noreferrer" className="button button-primary product-order-button">Pedir cotação <ArrowUpRight size={16} /></a>
               <p className="product-support-copy">Atendimento direto com a equipe MetalBoa. Se preferir, <Link to="/contato">fale com a gente por outros canais</Link>.</p>
             </div>
           </div>
@@ -554,11 +564,12 @@ function HomeContent() {
               <br />
               <span>Resultado de verdade.</span>
             </h2>
+            <img src={fabrica} alt="Fábrica da MetalBoa" loading="lazy" className="my-6 aspect-[3/1] w-full object-cover" />
             <div className="intro-bottom">
               <p>
                 Com mais de 25 anos de experiência, desenvolvemos e fabricamos equipamentos em aço
                 inox para clientes e parceiros em todo o Brasil. Nossa equipe une conhecimento
-                técnico e fabricação própria para atender diferentes necessidades.
+                técnico e fabricação própria em Vespasiano, Minas Gerais, para atender diferentes necessidades.
               </p>
               <Link to="/sobre" className="text-link">
                 Conheça a MetalBoa <MoveRight size={16} />
@@ -888,7 +899,7 @@ function InteriorContent({ current }: { current: PageKey }) {
           </div>
         </section>
       )}
-      {(current === "atacado" || current === "varejo" || current === "cozinhas") && (
+      {(current === "atacado" || current === "varejo") && (
         <ProductCatalog current={current} />
       )}
       {isContactPanel(current) && (
@@ -1013,14 +1024,16 @@ function isContactPanel(current: PageKey) {
   return current === "contato";
 }
 
-function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas" }) {
+function ProductCatalog({ current }: { current: "atacado" | "varejo" | "todos" }) {
   const [query, setQuery] = useState("");
-  const products = catalogs[current] ?? [];
-  const filteredProducts = products.filter((product) =>
-    product.name.toLocaleLowerCase("pt-BR").includes(query.trim().toLocaleLowerCase("pt-BR")),
-  );
-  const title =
-    current === "cozinhas" ? "Cozinha industrial" : current === "atacado" ? "Atacado" : "Varejo";
+  const [category, setCategory] = useState<"todos" | "atacado" | "varejo">("todos");
+  const selection = current === "todos" ? category : current;
+  const products = selection === "todos"
+    ? [...(catalogs.atacado ?? []), ...(catalogs.varejo ?? [])]
+    : catalogs[selection] ?? [];
+  const normalize = (text: string) => text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase("pt-BR");
+  const filteredProducts = products.filter((product) => normalize(product.name).includes(normalize(query.trim())));
+  const title = current === "todos" ? "Todos os produtos" : current === "atacado" ? "Atacado" : "Varejo";
 
   return (
     <section className="catalog-section section-pad" id="produtos">
@@ -1046,30 +1059,40 @@ function ProductCatalog({ current }: { current: "atacado" | "varejo" | "cozinhas
               aria-label={`Buscar produtos de ${title}`}
             />
           </label>
-          <span className="catalog-count">
+          {current === "todos" && (
+            <select aria-label="Categoria" value={category} onChange={(event) => {
+              const value = event.target.value;
+              setCategory(value === "atacado" || value === "varejo" ? value : "todos");
+            }} className="border border-border bg-white px-3 py-2">
+              <option value="todos">Todas as categorias</option>
+              <option value="atacado">Atacado</option>
+              <option value="varejo">Varejo</option>
+            </select>
+          )}
+          <span className="catalog-count" role="status">
             {filteredProducts.length} de {products.length} produtos
           </span>
         </div>
         {filteredProducts.length > 0 ? (
           <div className="product-grid">
-            {filteredProducts.map((product, index) => (
-              <a
-                key={product.slug}
-                className="product-card"
-                href={`/produtos/${product.slug}`}
-              >
-                <span className="product-card-top">
-                  <span className="product-number">{String(index + 1).padStart(2, "0")}</span>
-                  <span className="product-link-icon">
-                    <ArrowUpRight size={17} />
-                  </span>
-                </span>
-                <span className="product-card-name">{product.name}</span>
-                <span className="product-card-link">
-                  Ver produto <MoveRight size={14} />
-                </span>
-              </a>
-            ))}
+            {filteredProducts.map((product) => {
+              const photo = productPhotos[product.slug]?.[0];
+              const quote = encodeURIComponent(`Olá! Gostaria de uma cotação de ${product.name}.`);
+              return (
+                <article key={product.slug} className="border border-border bg-white">
+                  <a href={`/produtos/${product.slug}`} aria-label={`Ver ficha de ${product.name}`} className="grid aspect-[4/3] place-items-center overflow-hidden border-b border-border p-4">
+                    {photo ? <img src={photo} alt="" loading="lazy" className="h-full w-full object-contain" /> : <span className="text-sm text-muted-foreground">Foto indisponível</span>}
+                  </a>
+                  <div className="grid gap-3 p-4">
+                    <h3 className="text-lg font-bold">{product.name}</h3>
+                    <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-primary">
+                      <a href={`/produtos/${product.slug}`} className="hover:underline">Ver ficha</a>
+                      <a href={`${WHATS}?text=${quote}`} className="hover:underline">Pedir cotação ↗</a>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         ) : (
           <p className="catalog-empty">Nenhum produto encontrado para “{query}”.</p>
